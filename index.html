@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DzenQ — Recognition Carved in Stone</title>
+  <meta name="description" content="DzenQ is the world's first system for issuing and exchanging cryptographic digital gratitude certificates — provable, unforgeable, and yours forever." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="DzenQ — Recognition Carved in Stone" />
+  <meta property="og:description" content="Digital gratitude certificates that are cryptographically signed, tamper-proof, and verifiable even offline." />
+  <meta property="og:type" content="website" />
+
+  <style>
+    /* ─── Reset & tokens ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0b0e1a;
+      --bg2:       #111525;
+      --bg3:       #161b2e;
+      --accent:    #6c63ff;
+      --accent2:   #00d4aa;
+      --accent3:   #ff6584;
+      --text:      #e8eaf6;
+      --text-muted:#8892b0;
+      --border:    rgba(108,99,255,.25);
+      --card-bg:   rgba(22,27,46,.85);
+      --radius:    14px;
+      --glow:      0 0 40px rgba(108,99,255,.35);
+      --transition:0.3s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── Scrollbar ──────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    /* ─── Utility ────────────────────────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tag {
+      display: inline-block;
+      background: rgba(108,99,255,.15);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    /* ─── Nav ────────────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      backdrop-filter: blur(18px);
+      background: rgba(11,14,26,.8);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: .9rem; font-weight: 500;
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--accent); color: #fff;
+      padding: 8px 22px; border-radius: 50px;
+      text-decoration: none; font-size: .9rem; font-weight: 600;
+      transition: opacity var(--transition), transform var(--transition);
+    }
+    .nav-cta:hover { opacity: .85; transform: translateY(-1px); }
+
+    /* ─── Hero ───────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      padding: 120px 24px 80px;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(108,99,255,.25) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(0,212,170,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative; max-width: 700px;
+    }
+
+    .hero-content .tag { margin-bottom: 24px; }
+
+    .hero-content h1 {
+      font-size: clamp(2.8rem, 6vw, 4.8rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -.03em;
+      margin-bottom: 24px;
+    }
+
+    .hero-content p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-muted); max-width: 560px;
+      margin-bottom: 40px;
+    }
+
+    .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      color: #fff; padding: 14px 34px;
+      border-radius: 50px; text-decoration: none;
+      font-weight: 700; font-size: 1rem;
+      box-shadow: var(--glow);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(108,99,255,.5); }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text); padding: 14px 34px;
+      border-radius: 50px; text-decoration: none;
+      font-weight: 600; font-size: 1rem;
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .btn-secondary:hover { background: rgba(108,99,255,.1); border-color: var(--accent); }
+
+    /* Floating particles canvas */
+    #particles { position: absolute; inset: 0; pointer-events: none; }
+
+    /* Stats strip */
+    .hero-stats {
+      display: flex; gap: 48px; margin-top: 72px;
+      flex-wrap: wrap;
+    }
+    .stat-num {
+      font-size: 2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { color: var(--text-muted); font-size: .85rem; }
+
+    /* ─── Section base ───────────────────────────────────────────────── */
+    section { padding: 96px 0; }
+
+    .section-header {
+      text-align: center; margin-bottom: 64px;
+    }
+    .section-header .tag { margin-bottom: 16px; }
+    .section-header h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800; letter-spacing: -.02em;
+      margin-bottom: 16px;
+    }
+    .section-header p {
+      color: var(--text-muted); max-width: 560px;
+      margin: 0 auto; font-size: 1.05rem;
+    }
+
+    /* ─── What is DzenQ ──────────────────────────────────────────────── */
+    #about { background: var(--bg2); }
+
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; align-items: center;
+    }
+
+    .about-text h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800; letter-spacing: -.02em;
+      margin-bottom: 20px; line-height: 1.15;
+    }
+    .about-text p {
+      color: var(--text-muted); margin-bottom: 16px; font-size: 1rem;
+    }
+
+    .meaning-list {
+      list-style: none; margin-top: 28px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .meaning-list li {
+      display: flex; align-items: center; gap: 12px;
+      color: var(--text-muted); font-size: .95rem;
+    }
+    .meaning-list li::before {
+      content: '✦';
+      color: var(--accent2); font-size: .7rem; flex-shrink: 0;
+    }
+
+    /* Thank you card visual */
+    .thank-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--glow);
+      position: relative;
+      overflow: hidden;
+    }
+    .thank-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(108,99,255,.08), rgba(0,212,170,.05));
+      pointer-events: none;
+    }
+    .card-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+    }
+    .card-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem;
+    }
+    .card-meta { display: flex; flex-direction: column; }
+    .card-name { font-weight: 700; font-size: .95rem; }
+    .card-date { font-size: .78rem; color: var(--text-muted); }
+    .card-body {
+      font-size: 1rem; color: var(--text); margin-bottom: 20px; line-height: 1.7;
+    }
+    .card-sig {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(0,212,170,.08);
+      border: 1px solid rgba(0,212,170,.2);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: .78rem; color: var(--accent2); font-family: monospace;
+    }
+    .card-sig-icon { font-size: 1rem; }
+    .verified-badge {
+      margin-top: 12px;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(0,212,170,.1); border-radius: 50px;
+      padding: 5px 12px; font-size: .78rem; color: var(--accent2);
+      font-weight: 600;
+    }
+
+    /* ─── How it works ───────────────────────────────────────────────── */
+    #how { background: var(--bg); }
+
+    .steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 28px; position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute; top: 52px; left: calc(16.66% + 14px); right: calc(16.66% + 14px);
+      height: 1px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: .4;
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+      transition: transform var(--transition), border-color var(--transition);
+      cursor: default;
+    }
+    .step-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+    }
+
+    .step-num {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1.1rem;
+      margin: 0 auto 20px;
+      position: relative; z-index: 1;
+    }
+
+    .step-icon { font-size: 2rem; margin-bottom: 8px; }
+
+    .step-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+    .step-card p { color: var(--text-muted); font-size: .9rem; }
+
+    /* ─── Features ───────────────────────────────────────────────────── */
+    #features { background: var(--bg2); }
+
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: var(--glow);
+    }
+
+    .feature-icon {
+      font-size: 2rem; margin-bottom: 16px;
+      display: block;
+    }
+    .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { color: var(--text-muted); font-size: .88rem; line-height: 1.6; }
+
+    /* ─── Why gratitude? ─────────────────────────────────────────────── */
+    #why { background: var(--bg3); }
+
+    .why-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; align-items: center;
+    }
+
+    .meanings-visual {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+
+    .meaning-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 12px 24px;
+      display: flex; align-items: center; gap: 14px;
+      font-size: .95rem;
+      animation: float-in 0.5s ease both;
+      cursor: default;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .meaning-pill:hover { border-color: var(--accent2); background: rgba(0,212,170,.06); }
+
+    .meaning-pill .emoji { font-size: 1.2rem; }
+    .meaning-pill .text { color: var(--text); font-weight: 500; }
+    .meaning-pill .points {
+      margin-left: auto; color: var(--accent2);
+      font-weight: 700; font-size: .85rem;
+    }
+
+    .why-text h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800; letter-spacing: -.02em;
+      margin-bottom: 20px; line-height: 1.15;
+    }
+    .why-text p {
+      color: var(--text-muted); margin-bottom: 16px; font-size: 1rem;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 20px; margin: 24px 0;
+      color: var(--text); font-style: italic;
+      font-size: 1.1rem;
+    }
+
+    /* ─── Tech ───────────────────────────────────────────────────────── */
+    #tech { background: var(--bg2); }
+
+    .tech-tabs {
+      display: flex; gap: 8px; margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0; flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: none; border: none;
+      color: var(--text-muted); font-size: .95rem;
+      font-weight: 600; padding: 12px 20px;
+      cursor: pointer; border-bottom: 2px solid transparent;
+      transition: color var(--transition), border-color var(--transition);
+      margin-bottom: -1px;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-btn:hover { color: var(--text); }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fade-in .3s ease; }
+
+    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .tech-content {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 40px; align-items: start;
+    }
+
+    .tech-text h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; }
+    .tech-text p { color: var(--text-muted); margin-bottom: 16px; font-size: .95rem; }
+
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+    .pros, .cons {
+      background: var(--card-bg); border-radius: var(--radius);
+      padding: 16px; border: 1px solid var(--border);
+    }
+    .pros h4 { color: var(--accent2); margin-bottom: 10px; font-size: .85rem; }
+    .cons h4 { color: var(--accent3); margin-bottom: 10px; font-size: .85rem; }
+    .pros ul, .cons ul {
+      list-style: none; display: flex; flex-direction: column; gap: 6px;
+    }
+    .pros li, .cons li { font-size: .82rem; color: var(--text-muted); }
+    .pros li::before { content: '✓ '; color: var(--accent2); }
+    .cons li::before { content: '✗ '; color: var(--accent3); }
+
+    .decision-box {
+      background: linear-gradient(135deg, rgba(108,99,255,.1), rgba(0,212,170,.08));
+      border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      margin-top: 20px;
+    }
+    .decision-box h4 { color: var(--accent); margin-bottom: 8px; font-size: .9rem; }
+    .decision-box p { color: var(--text-muted); font-size: .88rem; }
+
+    /* Identity tree visual */
+    .identity-tree {
+      background: var(--card-bg);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 28px; font-family: monospace;
+      font-size: .9rem; line-height: 2;
+      overflow: hidden;
+    }
+    .tree-root { color: var(--accent); font-weight: 700; }
+    .tree-child { color: var(--accent2); }
+    .tree-connector { color: var(--text-muted); }
+    .tree-label { color: var(--text-muted); font-size: .75rem; margin-left: 8px; }
+
+    /* ─── CTA ────────────────────────────────────────────────────────── */
+    #cta {
+      background: var(--bg);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+
+    #cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 50% 50%, rgba(108,99,255,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    #cta h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900; letter-spacing: -.03em;
+      margin-bottom: 20px;
+    }
+
+    #cta p { color: var(--text-muted); max-width: 500px; margin: 0 auto 40px; font-size: 1.05rem; }
+
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ─── Footer ─────────────────────────────────────────────────────── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+    }
+    footer p { color: var(--text-muted); font-size: .85rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ─── Reveal animation ───────────────────────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .about-grid, .why-grid, .tech-content { grid-template-columns: 1fr; }
+      .features-grid, .steps { grid-template-columns: 1fr 1fr; }
+      .steps::before { display: none; }
+      .nav-links { display: none; }
+      .pros-cons { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .features-grid, .steps { grid-template-columns: 1fr; }
+      .hero-stats { gap: 28px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── Navigation ──────────────────────────────────────────────────── -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#hero" class="logo gradient-text">DzenQ</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#tech">Technology</a></li>
+      </ul>
+      <a href="#cta" class="nav-cta">Get Early Access</a>
+    </div>
+  </nav>
+
+  <!-- ─── Hero ────────────────────────────────────────────────────────── -->
+  <section id="hero">
+    <canvas id="particles"></canvas>
+    <div class="hero-bg"></div>
+    <div class="container">
+      <div class="hero-content">
+        <span class="tag">🚀 Launching 2025</span>
+        <h1>Recognition<br><span class="gradient-text">Carved in Stone</span></h1>
+        <p>
+          DzenQ is the world's first system for issuing and exchanging
+          cryptographic digital gratitude certificates — provable, unforgeable,
+          and yours forever. Even after we're gone.
+        </p>
+        <div class="hero-buttons">
+          <a href="#cta" class="btn-primary">Get Early Access</a>
+          <a href="#how" class="btn-secondary">How It Works</a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num">100%</div>
+            <div class="stat-label">Cryptographically Signed</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">∞</div>
+            <div class="stat-label">Unforgeable &amp; Permanent</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">0</div>
+            <div class="stat-label">Central Authority Needed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── What is DzenQ ───────────────────────────────────────────────── -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <span class="tag">What is DzenQ?</span>
+          <h2>A <span class="gradient-text">"Thank You"</span><br>that can never be denied</h2>
+          <p>
+            DzenQ turns every expression of gratitude into a tamper-proof digital
+            certificate. It can be any digital media — a document, image, audio, or
+            video — carrying the recipient's unique ID and signed by the issuer's
+            private key.
+          </p>
+          <p>
+            Just like a notarized letter, but faster than sending a chat message and
+            valid for as long as mathematics exists.
+          </p>
+          <ul class="meaning-list">
+            <li>A "thank you" = I acknowledge your contribution</li>
+            <li>A "thank you" = I am your debtor</li>
+            <li>A "thank you" = Our bond grows stronger</li>
+            <li>A "thank you" = I value you + 1 loyalty point</li>
+          </ul>
+        </div>
+
+        <!-- Sample certificate card -->
+        <div class="thank-card reveal" style="transition-delay:.15s">
+          <div class="card-header">
+            <div class="card-avatar">AS</div>
+            <div class="card-meta">
+              <span class="card-name">Andriy Savchenko</span>
+              <span class="card-date">Feb 28, 2025 · 09:41 UTC</span>
+            </div>
+          </div>
+          <div class="card-body">
+            Thank you, Maria, for the incredible work on our product launch. Your
+            energy and precision made all the difference. This recognition is
+            permanent and irrevocable. 🙏
+          </div>
+          <div class="card-sig">
+            <span class="card-sig-icon">🔏</span>
+            <span>EBcYGH7D…a3Qm · KERI-signed · AID:EFkrT9w…</span>
+          </div>
+          <span class="verified-badge">✅ Cryptographically Verified</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── How It Works ────────────────────────────────────────────────── -->
+  <section id="how">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="tag">Simple by design</span>
+        <h2>Three steps.<br>Forever proof.</h2>
+        <p>Issuing a DzenQ is no harder than sending a message. Verifying one needs no internet.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step-card reveal">
+          <div class="step-num">1</div>
+          <div class="step-icon">🪪</div>
+          <h3>Create Your Identity</h3>
+          <p>
+            Choose a username and a passphrase. DzenQ generates a unique AID and
+            a cryptographic key pair stored securely in your device's keystore.
+            No server holds your private key — ever.
+          </p>
+        </div>
+
+        <div class="step-card reveal" style="transition-delay:.1s">
+          <div class="step-num">2</div>
+          <div class="step-icon">🤝</div>
+          <h3>Issue a Thank You</h3>
+          <p>
+            Compose any media — text, image, audio — attach the recipient's AID,
+            and sign it with one tap. Share it over any channel: email, chat,
+            QR code, or USB drive. No internet required.
+          </p>
+        </div>
+
+        <div class="step-card reveal" style="transition-delay:.2s">
+          <div class="step-num">3</div>
+          <div class="step-icon">🔍</div>
+          <h3>Verify Anytime</h3>
+          <p>
+            Anyone can independently verify the certificate's authenticity — online
+            or offline — using the included Key Event Log. No central server needed.
+            Math doesn't lie.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Features ────────────────────────────────────────────────────── -->
+  <section id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="tag">Core Properties</span>
+        <h2>Built for trust,<br>designed for humans</h2>
+        <p>Every design decision prioritizes usability without sacrificing cryptographic integrity.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <span class="feature-icon">🔒</span>
+          <h3>Unforgeable</h3>
+          <p>Every certificate is cryptographically signed. Altering it even by one bit renders the signature invalid — detectable instantly.</p>
+        </div>
+
+        <div class="feature-card reveal" style="transition-delay:.05s">
+          <span class="feature-icon">📵</span>
+          <h3>Works Offline</h3>
+          <p>Issue and verify gratitude certificates in the forest, on a plane, or anywhere — internet is never a prerequisite for core functionality.</p>
+        </div>
+
+        <div class="feature-card reveal" style="transition-delay:.1s">
+          <span class="feature-icon">🌐</span>
+          <h3>Decentralized</h3>
+          <p>No single authority controls who can issue or verify a certificate. Central servers are helpful directories, not gatekeepers.</p>
+        </div>
+
+        <div class="feature-card reveal" style="transition-delay:.15s">
+          <span class="feature-icon">📱</span>
+          <h3>Multi-device</h3>
+          <p>Your identity spans all your devices through a delegated signing architecture. Losing one device doesn't compromise your identity.</p>
+        </div>
+
+        <div class="feature-card reveal" style="transition-delay:.2s">
+          <span class="feature-icon">🔑</span>
+          <h3>Key Rotation</h3>
+          <p>Compromised key? Rotate it. Thanks issued before the compromise remain valid. Future forgeries are impossible.</p>
+        </div>
+
+        <div class="feature-card reveal" style="transition-delay:.25s">
+          <span class="feature-icon">🕵️</span>
+          <h3>Privacy-First</h3>
+          <p>You decide what to reveal and what to keep private. Selective disclosure: show proof of recognition without exposing the content.</p>
+        </div>
+
+        <div class="feature-card reveal" style="transition-delay:.3s">
+          <span class="feature-icon">♾️</span>
+          <h3>Permanent</h3>
+          <p>Certificates remain provably valid even if DzenQ itself shuts down. The math is in the certificate, not our servers.</p>
+        </div>
+
+        <div class="feature-card reveal" style="transition-delay:.35s">
+          <span class="feature-icon">⚡</span>
+          <h3>Instant</h3>
+          <p>No blockchain fees, no mining, no waiting. A certificate is issued the moment you tap "Sign" — free, always.</p>
+        </div>
+
+        <div class="feature-card reveal" style="transition-delay:.4s">
+          <span class="feature-icon">📂</span>
+          <h3>Any Medium</h3>
+          <p>Documents, images, video, audio — anything digital can carry a DzenQ signature. It's not a format, it's a layer of trust.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Why Gratitude ────────────────────────────────────────────────── -->
+  <section id="why">
+    <div class="container">
+      <div class="why-grid">
+        <div class="meanings-visual reveal">
+          <div class="meaning-pill" style="animation-delay:.0s">
+            <span class="emoji">🤝</span>
+            <span class="text">"Thank you" = I acknowledge your contribution</span>
+            <span class="points">+1</span>
+          </div>
+          <div class="meaning-pill" style="animation-delay:.07s">
+            <span class="emoji">💳</span>
+            <span class="text">"Thank you" = I am your debtor</span>
+            <span class="points">+1</span>
+          </div>
+          <div class="meaning-pill" style="animation-delay:.14s">
+            <span class="emoji">🧠</span>
+            <span class="text">"Thank you" = I will remember you</span>
+            <span class="points">+1</span>
+          </div>
+          <div class="meaning-pill" style="animation-delay:.21s">
+            <span class="emoji">⭐</span>
+            <span class="text">"Thank you" = In my eyes you are good</span>
+            <span class="points">+1</span>
+          </div>
+          <div class="meaning-pill" style="animation-delay:.28s">
+            <span class="emoji">🎁</span>
+            <span class="text">"Thank you" = A gift and a promise</span>
+            <span class="points">+1</span>
+          </div>
+          <div class="meaning-pill" style="animation-delay:.35s">
+            <span class="emoji">💎</span>
+            <span class="text">"Thank you" = Our bond grew stronger</span>
+            <span class="points">+1</span>
+          </div>
+        </div>
+
+        <div class="why-text reveal" style="transition-delay:.15s">
+          <span class="tag">Why Gratitude?</span>
+          <h2>Gratitude is the<br><span class="gradient-text">oldest currency</span></h2>
+          <p>
+            Long before money, humans exchanged recognition. It built trust,
+            communities, and civilization itself. Yet today, a "thank you" vanishes
+            in seconds — a chat notification buried under hundreds of others.
+          </p>
+          <p>
+            DzenQ makes recognition permanent. A signed certificate in your portfolio
+            saying "this person helped me" carries real social and professional weight
+            — provably, forever.
+          </p>
+          <blockquote>
+            "If you add a certificate to a file's metadata, a thank-you
+            transforms into a gift, a promise, an irrevocable admission."
+          </blockquote>
+          <p>
+            Voice messages can be faked by AI. Emails can be disputed. But a
+            cryptographic signature? You can't say you didn't sign it.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Technology ───────────────────────────────────────────────────── -->
+  <section id="tech">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="tag">Under the Hood</span>
+        <h2>Serious crypto,<br>invisible to the user</h2>
+        <p>DzenQ is built on KERI — a modern, math-first identity protocol that works offline.</p>
+      </div>
+
+      <div class="tech-tabs" role="tablist">
+        <button class="tab-btn active" data-tab="keri" role="tab">KERI Protocol</button>
+        <button class="tab-btn" data-tab="identity" role="tab">Identity Model</button>
+        <button class="tab-btn" data-tab="stack" role="tab">Tech Stack</button>
+        <button class="tab-btn" data-tab="open" role="tab">Open Source</button>
+      </div>
+
+      <!-- KERI -->
+      <div class="tab-pane active" id="tab-keri">
+        <div class="tech-content">
+          <div class="tech-text">
+            <h3>Why KERI?</h3>
+            <p>
+              KERI (Key Event Receipt Infrastructure) is a decentralized identity
+              protocol designed from the ground up for offline capability, key
+              rotation, and non-repudiation — exactly what DzenQ needs.
+            </p>
+            <p>
+              Unlike blockchain, KERI transactions are free and instant. Unlike
+              traditional PKI, KERI doesn't require a central certificate authority.
+              Every identity controls its own Key Event Log (KEL).
+            </p>
+            <div class="pros-cons">
+              <div class="pros">
+                <h4>KERI Advantages</h4>
+                <ul>
+                  <li>Works fully offline</li>
+                  <li>Zero transaction fees</li>
+                  <li>Key rotation built-in</li>
+                  <li>Self-certifying identifiers</li>
+                  <li>Math-based, not trust-based</li>
+                </ul>
+              </div>
+              <div class="cons">
+                <h4>Trade-offs</h4>
+                <ul>
+                  <li>Newer, less battle-tested</li>
+                  <li>Smaller ecosystem</li>
+                  <li>Steeper learning curve</li>
+                </ul>
+              </div>
+            </div>
+            <div class="decision-box">
+              <h4>🏆 Our Choice</h4>
+              <p>KERI's offline capability and free transactions win decisively over blockchain alternatives for a gratitude-at-scale system.</p>
+            </div>
+          </div>
+          <div class="identity-tree reveal">
+            <div class="tree-root">🔐 Key Event Log (KEL)</div>
+            <br>
+            <div>
+              <span class="tree-connector">ICP </span>
+              <span class="tree-child">Inception Event</span>
+              <span class="tree-label">– AID born</span>
+            </div>
+            <div>
+              <span class="tree-connector">ROT </span>
+              <span class="tree-child">Rotation Event</span>
+              <span class="tree-label">– new key, same identity</span>
+            </div>
+            <div>
+              <span class="tree-connector">IXN </span>
+              <span class="tree-child">Interaction Event</span>
+              <span class="tree-label">– anchor gratitude</span>
+            </div>
+            <div>
+              <span class="tree-connector">DIP </span>
+              <span class="tree-child">Delegation Event</span>
+              <span class="tree-label">– delegate to device</span>
+            </div>
+            <br>
+            <div style="color:var(--accent2); font-size:.8rem">
+              Every event is signed &amp; chained.<br>
+              Tamper = broken chain = detected.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Identity Model -->
+      <div class="tab-pane" id="tab-identity">
+        <div class="tech-content">
+          <div class="tech-text">
+            <h3>Root + Delegated Architecture</h3>
+            <p>
+              Your identity is a hierarchy. A Root AID (controlled by multiple
+              devices via multisig 2-of-3) governs key management. Each daily-use
+              device gets its own Delegated AID for signing certificates.
+            </p>
+            <p>
+              This means: losing your phone doesn't mean losing your identity.
+              Your laptop and backup key can revoke the phone and issue a new
+              delegation — all cryptographically chained.
+            </p>
+            <div class="decision-box">
+              <h4>🛡️ Incident Recovery</h4>
+              <p>Stolen device? Two remaining directors rotate the Root AID, the stolen device's delegation is revoked — all its future signatures instantly invalid.</p>
+            </div>
+          </div>
+          <div class="identity-tree reveal">
+<pre style="color:var(--text); background:none; font-family:monospace; font-size:.88rem; line-height:1.9">
+<span style="color:var(--accent)">Root AID</span> <span style="color:var(--text-muted)">(multisig 2/3)</span>
+├── <span style="color:var(--accent2)">📱 Device AID 1</span> <span style="color:var(--text-muted)">(phone)</span>
+│   └── signs daily thanks
+├── <span style="color:var(--accent2)">💻 Device AID 2</span> <span style="color:var(--text-muted)">(laptop)</span>
+│   └── signs daily thanks
+└── <span style="color:var(--accent2)">🗝️ Device AID 3</span> <span style="color:var(--text-muted)">(paper backup)</span>
+    └── emergency recovery only
+</pre>
+            <div style="margin-top:16px; color:var(--text-muted); font-size:.8rem">
+              Root never signs certificates directly.<br>
+              It only manages keys and delegations.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tech Stack -->
+      <div class="tab-pane" id="tab-stack">
+        <div class="tech-content">
+          <div class="tech-text">
+            <h3>Cross-Platform, Native Performance</h3>
+            <p>
+              DzenQ is built with Kotlin Multiplatform (KMP) targeting Android,
+              iOS, web, and desktop from a single codebase. Cryptographic operations
+              are handled by a Rust (keriox) library via native bindings — ensuring
+              maximum speed and hardware keystore access.
+            </p>
+            <div class="pros-cons">
+              <div class="pros">
+                <h4>KMP + Rust</h4>
+                <ul>
+                  <li>One codebase, all platforms</li>
+                  <li>Native keystore access</li>
+                  <li>Rust-level crypto speed</li>
+                  <li>Google-backed KMP</li>
+                </ul>
+              </div>
+              <div class="cons">
+                <h4>Trade-offs</h4>
+                <ul>
+                  <li>Rust binding overhead</li>
+                  <li>Smaller KMP ecosystem</li>
+                </ul>
+              </div>
+            </div>
+            <div class="decision-box">
+              <h4>🔧 Stack</h4>
+              <p><strong>Core:</strong> keriox (Rust) · <strong>App:</strong> Kotlin Multiplatform · <strong>Backend (optional):</strong> Witness/Directory servers · <strong>Protocol:</strong> KERI + ACDC</p>
+            </div>
+          </div>
+          <div class="identity-tree reveal">
+            <div style="color:var(--accent); font-weight:700; margin-bottom:12px">Platform Layers</div>
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:.85rem">
+              <div style="background:rgba(108,99,255,.1);border:1px solid var(--border);border-radius:8px;padding:10px 14px">
+                <div style="color:var(--accent)">UI Layer</div>
+                <div style="color:var(--text-muted)">Kotlin Multiplatform · Android / iOS / Desktop</div>
+              </div>
+              <div style="background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.2);border-radius:8px;padding:10px 14px">
+                <div style="color:var(--accent2)">Business Logic</div>
+                <div style="color:var(--text-muted)">Kotlin shared module · KERI state machine</div>
+              </div>
+              <div style="background:rgba(255,101,132,.1);border:1px solid rgba(255,101,132,.2);border-radius:8px;padding:10px 14px">
+                <div style="color:var(--accent3)">Crypto Core</div>
+                <div style="color:var(--text-muted)">keriox (Rust) · Device Keystore</div>
+              </div>
+              <div style="background:rgba(22,27,46,.8);border:1px solid var(--border);border-radius:8px;padding:10px 14px">
+                <div style="color:var(--text)">Storage</div>
+                <div style="color:var(--text-muted)">Local KEL files · Optional witness servers</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Open Source -->
+      <div class="tab-pane" id="tab-open">
+        <div class="tech-content">
+          <div class="tech-text">
+            <h3>Open Core, Community-First</h3>
+            <p>
+              The DzenQ core protocol and verification library are open source.
+              Trust requires transparency — you should be able to verify that the
+              code does what we claim.
+            </p>
+            <p>
+              Contributors receive named DzenQ certificates of contribution — your
+              proof of impact, forever signed into the ledger of the project.
+            </p>
+            <div class="pros-cons">
+              <div class="pros">
+                <h4>Open Core Benefits</h4>
+                <ul>
+                  <li>Community trust</li>
+                  <li>Security audits by experts</li>
+                  <li>Free contributions</li>
+                  <li>Ecosystem growth</li>
+                </ul>
+              </div>
+              <div class="cons">
+                <h4>Managed Risks</h4>
+                <ul>
+                  <li>Commercial use restricted</li>
+                  <li>Paid features stay closed</li>
+                </ul>
+              </div>
+            </div>
+            <div class="decision-box">
+              <h4>📜 License Model</h4>
+              <p>Core: Open source with a non-commercial clause. Premium features: Freemium. Your keys and certificates: always yours, always portable.</p>
+            </div>
+          </div>
+          <div class="identity-tree reveal">
+            <div style="color:var(--accent); font-weight:700; margin-bottom:16px">Contribution = Certificate</div>
+            <div class="thank-card" style="box-shadow:none">
+              <div class="card-header">
+                <div class="card-avatar" style="font-size:.75rem">DQ</div>
+                <div class="card-meta">
+                  <span class="card-name">DzenQ Core Team</span>
+                  <span class="card-date">Issued upon merge</span>
+                </div>
+              </div>
+              <div class="card-body" style="font-size:.85rem">
+                Thank you, contributor, for PR #142 — "Add offline verification to keriox bindings." Your work is permanently acknowledged. 🙏
+              </div>
+              <div class="card-sig" style="font-size:.72rem">
+                🔏 EBcYGH7D…a3Qm · Signed by DzenQ Core AID
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── CTA ──────────────────────────────────────────────────────────── -->
+  <section id="cta">
+    <div class="container">
+      <h2 class="reveal">Start giving thanks<br><span class="gradient-text">that last forever</span></h2>
+      <p class="reveal" style="transition-delay:.1s">
+        Join the waitlist. Be the first to issue a DzenQ — a thank you the world
+        cannot deny.
+      </p>
+      <div class="cta-buttons reveal" style="transition-delay:.2s">
+        <a href="mailto:hello@dzenq.io" class="btn-primary">✉️ Join the Waitlist</a>
+        <a href="https://github.com/WheelReinvent" class="btn-secondary" target="_blank" rel="noopener">⭐ Follow on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ───────────────────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <p>
+        &copy; 2025 DzenQ · Built with 🧡 and cryptography ·
+        <a href="https://github.com/WheelReinvent/dzenq-landing" target="_blank" rel="noopener">GitHub</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Particle canvas ─────────────────────────────────────────────── */
+    (function () {
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let W, H;
+
+      function resize() {
+        W = canvas.width = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+      }
+
+      function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+      function initParticles(n) {
+        particles = [];
+        for (let i = 0; i < n; i++) {
+          particles.push({
+            x: randomBetween(0, W),
+            y: randomBetween(0, H),
+            r: randomBetween(1, 2.5),
+            dx: randomBetween(-0.3, 0.3),
+            dy: randomBetween(-0.3, 0.3),
+            a: randomBetween(0.2, 0.7),
+          });
+        }
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(108,99,255,${p.a})`;
+          ctx.fill();
+          p.x += p.dx;
+          p.y += p.dy;
+          if (p.x < 0 || p.x > W) p.dx *= -1;
+          if (p.y < 0 || p.y > H) p.dy *= -1;
+        });
+        requestAnimationFrame(drawParticles);
+      }
+
+      window.addEventListener('resize', () => { resize(); initParticles(60); });
+      resize();
+      initParticles(60);
+      drawParticles();
+    })();
+
+    /* ── Scroll reveal ───────────────────────────────────────────────── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ── Tab switcher ────────────────────────────────────────────────── */
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    /* ── Nav shrink on scroll ────────────────────────────────────────── */
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').style.boxShadow =
+        window.scrollY > 40 ? '0 4px 30px rgba(0,0,0,.4)' : 'none';
+    });
+
+    /* ── Meaning pills counter ───────────────────────────────────────── */
+    let count = 0;
+    const pills = document.querySelectorAll('.meaning-pill');
+    const pillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          let delay = 0;
+          pills.forEach(pill => {
+            setTimeout(() => {
+              pill.style.opacity = '1';
+              pill.style.transform = 'translateX(0)';
+            }, delay);
+            delay += 80;
+          });
+          pillObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.2 });
+
+    pills.forEach(p => {
+      p.style.opacity = '0';
+      p.style.transform = 'translateX(-20px)';
+      p.style.transition = 'opacity .4s ease, transform .4s ease';
+    });
+    if (pills.length) pillObserver.observe(pills[0]);
+  </script>
+</body>
+</html>
