@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DzenQ — Recognition Carved in Stone</title>
+  <meta name="description" content="DzenQ is the world's first system for issuing and exchanging cryptographic digital gratitude certificates." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --tar:        #120d06;
+      --brown-deep: #1e1409;
+      --brown:      #2a1c0c;
+      --brown-mid:  #3d2a14;
+      --brown-light:#5a3e22;
+      --white:      #f8f4ee;
+      --off-white:  #ede7de;
+      --green:      #2e7d54;
+      --green-light:#3d9e6e;
+      --text-on-dark: #e8e0d4;
+      --text-muted: #8a7560;
+      --border-dark: rgba(90,62,34,.4);
+      --radius: 2px;
+      --transition: 0.25s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--brown);
+      color: var(--text-on-dark);
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: .035; mix-blend-mode: overlay;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--tar); }
+    ::-webkit-scrollbar-thumb { background: var(--brown-light); border-radius: 2px; }
+
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+    .tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid var(--border-dark);
+      color: var(--text-muted);
+      padding: 4px 12px; border-radius: 2px;
+      font-size: .68rem; font-weight: 400; letter-spacing: .15em; text-transform: uppercase;
+    }
+    .tag-green { border-color: rgba(46,125,84,.5); color: var(--green-light); background: rgba(46,125,84,.07); }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(18,13,6,.94);
+      border-bottom: 1px solid var(--border-dark);
+      backdrop-filter: blur(14px);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px; max-width: 1080px; margin: 0 auto;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-svg { width: 32px; height: 28px; flex-shrink: 0; }
+    .logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem; font-weight: 700; letter-spacing: .05em;
+      color: var(--white);
+    }
+    .logo-text span { color: var(--green-light); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      background: transparent; border: 1px solid var(--green);
+      color: var(--green-light); padding: 8px 22px; border-radius: 2px;
+      text-decoration: none; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+      transition: background var(--transition);
+    }
+    .nav-cta:hover { background: rgba(46,125,84,.14); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh; display: flex; align-items: center;
+      background: var(--tar); padding: 140px 32px 100px;
+      position: relative; overflow: hidden;
+    }
+    #hero::after {
+      content: ''; position: absolute; bottom: -200px; right: -150px;
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse, rgba(42,28,12,.9) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-vline {
+      position: absolute; top: 0; left: 160px; width: 1px; height: 100%;
+      background: linear-gradient(180deg, transparent, var(--green) 30%, var(--green) 70%, transparent);
+      opacity: .15;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 740px; }
+    .hero-eyebrow { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; }
+    .eyebrow-line { width: 40px; height: 1px; background: var(--green); }
+
+    .hero-content h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.6rem, 8.5vw, 7.2rem);
+      font-weight: 700; line-height: .92; letter-spacing: -.02em;
+      color: var(--white); margin-bottom: 0;
+    }
+    .hero-content h1 em { font-style: italic; color: var(--off-white); }
+
+    .hero-sub {
+      font-size: .78rem; letter-spacing: .08em;
+      color: var(--text-muted); margin: 28px 0 40px;
+      border-left: 2px solid var(--brown-mid);
+      padding-left: 18px; max-width: 460px; line-height: 1.9;
+    }
+
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 80px; }
+    .btn-primary {
+      background: var(--white); color: var(--tar);
+      padding: 13px 36px; border-radius: 2px; text-decoration: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 500;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .btn-primary:hover { background: var(--off-white); transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent; border: 1px solid var(--border-dark);
+      color: var(--text-muted); padding: 13px 36px; border-radius: 2px;
+      text-decoration: none; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+      transition: border-color var(--transition), color var(--transition);
+    }
+    .btn-ghost:hover { border-color: var(--brown-light); color: var(--white); }
+
+    .hero-stats { display: flex; gap: 0; border-top: 1px solid var(--border-dark); }
+    .stat { padding: 24px 48px 0 0; border-right: 1px solid var(--border-dark); margin-right: 48px; }
+    .stat:last-child { border-right: none; }
+    .stat-n {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.6rem; font-weight: 700; color: var(--white); line-height: 1; display: block;
+    }
+    .stat-l { font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
+
+    /* SECTIONS */
+    section { padding: 100px 0; }
+
+    .sec-label {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 48px;
+    }
+    .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border-dark); }
+    .sec-label span { font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+
+    .sec-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 700; line-height: 1.05; letter-spacing: -.01em; color: var(--white);
+    }
+
+    /* ABOUT */
+    #about { background: var(--brown-deep); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .about-text p { color: var(--text-muted); font-size: .8rem; line-height: 1.95; margin-bottom: 18px; }
+    .about-list { list-style: none; margin-top: 32px; }
+    .about-list li {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px solid var(--border-dark);
+      font-size: .76rem; color: var(--text-muted); line-height: 1.7;
+    }
+    .about-list li:first-child { border-top: 1px solid var(--border-dark); }
+    .li-num { color: var(--green-light); font-size: .62rem; letter-spacing: .1em; flex-shrink: 0; margin-top: 2px; }
+
+    /* Certificate card — white paper style */
+    .cert-card {
+      background: var(--white); color: var(--tar);
+      border-radius: 2px; overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.55);
+      position: relative;
+    }
+    .cert-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--tar), var(--brown-mid) 65%, var(--green) 100%);
+    }
+    .cert-top {
+      padding: 26px 26px 18px; border-bottom: 1px solid rgba(18,13,6,.08);
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .cert-badge { font-size: .6rem; letter-spacing: .16em; text-transform: uppercase; color: #8a7560; }
+    .cert-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 700; color: var(--tar); margin-top: 3px; }
+    .cert-id { font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--green); }
+    .cert-body { padding: 22px 26px; }
+    .cert-from { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--brown); display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 600; color: var(--white);
+      font-family: 'Cormorant Garamond', serif; flex-shrink: 0;
+    }
+    .arrow { color: rgba(18,13,6,.22); font-size: .8rem; }
+    .cert-name { font-size: .8rem; font-weight: 600; color: var(--tar); }
+    .cert-date { font-size: .62rem; color: #8a7560; margin-top: 2px; }
+    .cert-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.08rem; font-style: italic;
+      color: #2a1c0c; line-height: 1.75; margin-bottom: 20px;
+    }
+    .cert-hash {
+      background: var(--off-white); padding: 10px 14px; border-radius: 2px;
+      font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: #8a7560;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hash-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .cert-footer {
+      padding: 13px 26px; background: rgba(18,13,6,.04);
+      font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--green);
+    }
+
+    /* HOW */
+    #how { background: var(--tar); }
+    .steps {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border-dark);
+      border: 1px solid var(--border-dark); border-radius: 2px; overflow: hidden;
+    }
+    .step { background: var(--brown-deep); padding: 40px 32px; transition: background var(--transition); }
+    .step:hover { background: var(--brown); }
+    .step-idx { font-size: .62rem; letter-spacing: .15em; text-transform: uppercase; color: var(--green-light); margin-bottom: 24px; }
+    .step-ico { font-size: 1.5rem; margin-bottom: 14px; display: block; }
+    .step h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 600; color: var(--white); margin-bottom: 10px;
+    }
+    .step p { font-size: .76rem; color: var(--text-muted); line-height: 1.85; }
+
+    /* FEATURES */
+    #features { background: var(--brown-deep); }
+    .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .feat {
+      border: 1px solid var(--border-dark); padding: 28px; border-radius: 2px;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .feat:hover { border-color: var(--brown-light); background: rgba(42,28,12,.5); }
+    .feat.g { border-top: 2px solid var(--green); }
+    .feat-ico { font-size: 1.3rem; margin-bottom: 14px; display: block; }
+    .feat.g .feat-ico { color: var(--green-light); }
+    .feat h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.18rem; font-weight: 600; color: var(--white); margin-bottom: 10px;
+    }
+    .feat p { font-size: .76rem; color: var(--text-muted); line-height: 1.85; }
+
+    /* WHY */
+    #why { background: var(--tar); }
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .pills { display: flex; flex-direction: column; gap: 10px; }
+    .pill {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 18px;
+      border: 1px solid var(--border-dark); border-radius: 2px;
+      background: var(--brown-deep);
+      transition: border-color var(--transition);
+      cursor: default;
+    }
+    .pill:hover { border-color: var(--brown-light); }
+    .pdot { width: 5px; height: 5px; border-radius: 50%; background: var(--border-dark); flex-shrink: 0; }
+    .pill.gp .pdot { background: var(--green-light); }
+    .pill span { font-size: .76rem; color: var(--text-muted); }
+    .ptag { margin-left: auto !important; font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted) !important; }
+    .pill.gp .ptag { color: var(--green-light) !important; }
+
+    .why-text .sec-title { margin-bottom: 20px; }
+    .dotsep { display: flex; align-items: center; gap: 6px; margin: 22px 0; }
+    .dotsep s { width: 4px; height: 4px; border-radius: 50%; background: var(--border-dark); text-decoration: none; display: block; }
+    .dotsep s.g { background: var(--green); }
+    .why-text p { font-size: .8rem; color: var(--text-muted); line-height: 1.95; margin-bottom: 16px; }
+    blockquote {
+      border-left: 2px solid var(--green); padding: 10px 0 10px 20px; margin: 26px 0;
+      font-family: 'Cormorant Garamond', serif; font-size: 1.12rem; font-style: italic;
+      color: var(--off-white); line-height: 1.6;
+    }
+    blockquote small { font-family: 'JetBrains Mono', monospace; font-size: .6rem; letter-spacing: .1em; font-style: normal; color: var(--text-muted); }
+
+    /* TECH */
+    #tech { background: var(--brown-deep); }
+    .tech-tabs { display: flex; margin-bottom: 48px; border-bottom: 1px solid var(--border-dark); }
+    .tab-btn {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem; letter-spacing: .08em;
+      padding: 12px 20px; cursor: pointer; margin-bottom: -1px;
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .tab-btn.active { color: var(--white); border-bottom-color: var(--green); }
+    .tab-btn:hover { color: var(--off-white); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fi .25s ease; }
+    @keyframes fi { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    .tech-text h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--white); margin-bottom: 16px;
+    }
+    .tech-text p { font-size: .78rem; color: var(--text-muted); line-height: 1.95; margin-bottom: 14px; }
+    .verdict {
+      border-left: 2px solid var(--green); padding: 14px 18px; margin-top: 22px;
+      background: rgba(46,125,84,.06);
+    }
+    .verdict-lbl { font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: var(--green-light); margin-bottom: 6px; }
+    .verdict p { font-size: .76rem; color: var(--text-muted); margin-bottom: 0; }
+    .tree {
+      background: var(--tar); border: 1px solid var(--border-dark); border-radius: 2px;
+      padding: 28px; font-family: 'JetBrains Mono', monospace; font-size: .76rem; line-height: 2.15;
+    }
+    .tr { color: var(--white); }
+    .tc { color: var(--off-white); opacity: .65; }
+    .tg { color: var(--green-light); }
+    .td { color: var(--text-muted); font-size: .65rem; }
+
+    /* CTA */
+    #cta { background: var(--brown); padding: 120px 0; position: relative; overflow: hidden; }
+    #cta::before {
+      content: ''; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 600px; height: 360px;
+      background: radial-gradient(ellipse, rgba(46,125,84,.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-in { text-align: center; position: relative; z-index: 1; }
+    .cta-in .sec-title { margin-bottom: 18px; }
+    .cta-in p { font-size: .8rem; color: var(--text-muted); max-width: 420px; margin: 0 auto 38px; line-height: 1.95; }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* FOOTER */
+    footer {
+      background: var(--tar); border-top: 1px solid var(--border-dark);
+      padding: 30px 32px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .flogo { display: flex; align-items: center; gap: 8px; }
+    .flogo-text { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 700; color: var(--white); }
+    .flogo-text span { color: var(--green-light); }
+    footer p { font-size: .62rem; letter-spacing: .08em; color: var(--text-muted); }
+    footer a { color: var(--text-muted); text-decoration: none; transition: color var(--transition); }
+    footer a:hover { color: var(--green-light); }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .about-grid, .why-grid, .tech-grid { grid-template-columns: 1fr; gap: 48px; }
+      .feat-grid, .steps { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      .hero-stats { flex-direction: column; gap: 20px; }
+      .hero-vline { display: none; }
+    }
+    @media (max-width: 600px) {
+      .feat-grid, .steps { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 14px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#hero" class="logo">
+      <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="75 40 1000 880" fill="none" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="navGradBack" x1="140" y1="160" x2="760" y2="560" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#5a3e22"/>
+            <stop offset="1" stop-color="#8a7560"/>
+          </linearGradient>
+          <linearGradient id="navGradFront" x1="330" y1="720" x2="930" y2="540" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2e7d54"/>
+            <stop offset="1" stop-color="#3d9e6e"/>
+          </linearGradient>
+        </defs>
+        <rect x="140" y="160" width="620" height="400" rx="90" stroke="url(#navGradBack)" stroke-width="42"/>
+        <g transform="rotate(14 700 580)">
+          <rect x="390" y="380" width="620" height="400" rx="90" stroke="url(#navGradFront)" stroke-width="42"/>
+        </g>
+      </svg>
+      <span class="logo-text">Dzen<span>Q</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#how">Process</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#tech">Technology</a></li>
+    </ul>
+    <a href="#cta" class="nav-cta">Early Access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-vline"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-line"></div>
+        <span class="tag tag-green">Launching 2026</span>
+      </div>
+      <h1>Recognition<br><em>Carved</em><br>in Stone</h1>
+      <p class="hero-sub">
+        The world's first cryptographic digital gratitude certificate — provable,
+        unforgeable, and verifiable forever. Even after we're gone.
+      </p>
+      <div class="hero-btns">
+        <a href="#cta" class="btn-primary">Get Early Access</a>
+        <a href="#how" class="btn-ghost">How It Works</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-n">100%</span>
+          <span class="stat-l">Cryptographically Signed</span>
+        </div>
+        <div class="stat">
+          <span class="stat-n">∞</span>
+          <span class="stat-l">Unforgeable &amp; Permanent</span>
+        </div>
+        <div class="stat">
+          <span class="stat-n">0</span>
+          <span class="stat-l">Central Authority</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="sec-label"><span>01 — What is DzenQ</span></div>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <h2 class="sec-title" style="margin-bottom:28px">A "Thank You"<br>that cannot be denied</h2>
+        <p>DzenQ turns every expression of gratitude into a tamper-proof digital certificate. It can be any digital media — a document, image, audio, or video — carrying the recipient's identity and a cryptographic signature that locks everything together.</p>
+        <p>No server, no company, no authority can alter or erase it. The certificate lives on your device — shareable yet immutable, like an inscription in stone.</p>
+        <ul class="about-list">
+          <li><span class="li-num">01.</span>Signed by the giver's private key — unforgeable proof of authorship</li>
+          <li><span class="li-num">02.</span>Contains a SHA-256 hash of every byte of content</li>
+          <li><span class="li-num">03.</span>Verifiable offline — no internet required to confirm authenticity</li>
+          <li><span class="li-num">04.</span>Designed to outlast any platform, company, or cloud service</li>
+        </ul>
+      </div>
+      <div class="reveal" style="transition-delay:.1s">
+        <div class="cert-card">
+          <div class="cert-top">
+            <div>
+              <div class="cert-badge">Gratitude Certificate</div>
+              <div class="cert-brand">DzenQ</div>
+            </div>
+            <div class="cert-id">#DZQ–0042</div>
+          </div>
+          <div class="cert-body">
+            <div class="cert-from">
+              <div class="avatar">MR</div>
+              <span class="arrow">→</span>
+              <div class="avatar" style="background:var(--brown-deep);">JK</div>
+              <div style="margin-left:10px">
+                <div class="cert-name">Maria Reyes → Jonas K.</div>
+                <div class="cert-date">March 14, 2025 · 09:41 UTC</div>
+              </div>
+            </div>
+            <p class="cert-text">
+              "You were the first person who believed in this idea when everyone else said it was impossible. Thank you — it changed everything."
+            </p>
+            <div class="cert-hash">
+              <div class="hash-dot"></div>
+              SHA-256: 9f4a2c3e…e17b · Ed25519: 3d8c…f4a1
+            </div>
+          </div>
+          <div class="cert-footer">✔ Verified · Tamper-proof · Offline-verifiable</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how">
+  <div class="container">
+    <div class="sec-label"><span>02 — Process</span></div>
+    <h2 class="sec-title" style="margin-bottom:48px">Three steps to<br>permanent recognition</h2>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-idx">Step 01</div>
+        <span class="step-ico">✍</span>
+        <h3>Compose</h3>
+        <p>Write your message. Optionally attach any media — photo, audio, document. Every byte is captured and bound to the certificate.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:.08s">
+        <div class="step-idx">Step 02</div>
+        <span class="step-ico">⬡</span>
+        <h3>Sign &amp; Hash</h3>
+        <p>Your private key signs the certificate. A SHA-256 hash seals the content. Forgery becomes computationally impossible.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:.16s">
+        <div class="step-idx">Step 03</div>
+        <span class="step-ico">◎</span>
+        <h3>Deliver</h3>
+        <p>The recipient receives a self-contained file. No app, no cloud, no account needed to verify it — ever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="sec-label"><span>03 — Features</span></div>
+    <h2 class="sec-title" style="margin-bottom:48px">Built to last<br>forever</h2>
+    <div class="feat-grid">
+      <div class="feat g reveal">
+        <span class="feat-ico">⬡</span>
+        <h3>Ed25519 Signatures</h3>
+        <p>Industry-standard elliptic-curve signatures. Tiny, fast, and mathematically unforgeable without your private key.</p>
+      </div>
+      <div class="feat reveal" style="transition-delay:.05s">
+        <span class="feat-ico">◎</span>
+        <h3>Offline Verifiable</h3>
+        <p>No server call needed. Anyone with the public key can verify authenticity — even in 50 years, even if DzenQ is gone.</p>
+      </div>
+      <div class="feat reveal" style="transition-delay:.1s">
+        <span class="feat-ico">▣</span>
+        <h3>Any Media Type</h3>
+        <p>Text, images, audio, video — the hash covers every byte. Attach a video message and it's sealed alongside the words.</p>
+      </div>
+      <div class="feat reveal" style="transition-delay:.15s">
+        <span class="feat-ico">◈</span>
+        <h3>Identity-Linked</h3>
+        <p>Certificates carry verified sender identity. Recipients know exactly who expressed gratitude — no impersonation possible.</p>
+      </div>
+      <div class="feat g reveal" style="transition-delay:.2s">
+        <span class="feat-ico">⬙</span>
+        <h3>Transferable</h3>
+        <p>Share with employers, display in portfolios, archive in wills. The certificate travels wherever you take it.</p>
+      </div>
+      <div class="feat reveal" style="transition-delay:.25s">
+        <span class="feat-ico">⬚</span>
+        <h3>No Central Authority</h3>
+        <p>No company can revoke, alter, or delete your certificate. Verification is mathematics — not trust in a third party.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why">
+  <div class="container">
+    <div class="sec-label"><span>04 — Why Gratitude</span></div>
+    <div class="why-grid">
+      <div class="pills reveal">
+        <div class="pill"><div class="pdot"></div><span>A mentor who changed your life</span><span class="ptag">+gratitude</span></div>
+        <div class="pill gp"><div class="pdot"></div><span>The colleague who believed first</span><span class="ptag">+verified</span></div>
+        <div class="pill"><div class="pdot"></div><span>A stranger's kindness that mattered</span><span class="ptag">+proof</span></div>
+        <div class="pill"><div class="pdot"></div><span>A teacher whose words stayed</span><span class="ptag">+permanent</span></div>
+        <div class="pill"><div class="pdot"></div><span>A parent who sacrificed quietly</span><span class="ptag">+forever</span></div>
+      </div>
+      <div class="why-text reveal" style="transition-delay:.12s">
+        <h2 class="sec-title">Because every thank you deserves to survive</h2>
+        <div class="dotsep"><s></s><s></s><s class="g"></s><s></s><s></s></div>
+        <p>Words vanish. Emails get deleted. Platforms shut down. The person who changed your life may never know the full weight of what they did.</p>
+        <blockquote>
+          "Gratitude is the memory of the heart."<br>
+          <small>— Jean-Baptiste Massieu</small>
+        </blockquote>
+        <p>DzenQ makes memory durable. A certificate issued today will be verifiable in a hundred years — signed proof that one human genuinely thanked another, and meant it enough to commit it cryptographically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section id="tech">
+  <div class="container">
+    <div class="sec-label"><span>05 — Technology</span></div>
+    <h2 class="sec-title" style="margin-bottom:48px">The architecture<br>of permanence</h2>
+
+    <div class="tech-tabs">
+      <button class="tab-btn active" data-tab="identity">Identity</button>
+      <button class="tab-btn" data-tab="storage">Storage</button>
+      <button class="tab-btn" data-tab="signing">Signing</button>
+      <button class="tab-btn" data-tab="verify">Verification</button>
+    </div>
+
+    <div class="tab-pane active" id="tab-identity">
+      <div class="tech-grid">
+        <div class="tech-text">
+          <h3>Decentralised Identity</h3>
+          <p>Each user controls a keypair generated locally. Your public key is your identity — no username, no email, no account. Optionally anchor to a DID for interoperability.</p>
+          <p>No personal data is stored anywhere. The identity is yours, portable, and sovereign.</p>
+          <div class="verdict"><div class="verdict-lbl">Our approach</div><p>Local keypair generation with optional hardware key backup and Shamir's Secret Sharing recovery.</p></div>
+        </div>
+        <div class="tree reveal">
+          <div class="tr">DzenQ Identity Root</div>
+          <div>  ├─ <span class="tc">Public Key</span> <span class="td">// Ed25519, 32 bytes</span></div>
+          <div>  ├─ <span class="tc">Private Key</span> <span class="td">// never leaves device</span></div>
+          <div>  ├─ <span class="tc">DID Document</span> <span class="td">// optional W3C DID</span></div>
+          <div>  │   └─ <span class="tg">Verification Method</span> <span class="td">// JWK2020</span></div>
+          <div>  └─ <span class="tc">Recovery Scheme</span> <span class="td">// Shamir SSS</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="tab-storage">
+      <div class="tech-grid">
+        <div class="tech-text">
+          <h3>Where Certificates Live</h3>
+          <p>Certificates are self-contained JSON-LD files. They live on your device first. Optional anchoring to IPFS or a personal server gives redundancy without dependency.</p>
+          <div class="verdict"><div class="verdict-lbl">Local-first principle</div><p>No cloud required. Works offline forever. You control your data completely.</p></div>
+        </div>
+        <div class="tree reveal">
+          <div class="tr">certificate-0042.dzenq</div>
+          <div>  ├─ <span class="tc">@context</span> <span class="td">// JSON-LD schema</span></div>
+          <div>  ├─ <span class="tc">issuer</span> <span class="td">// sender DID</span></div>
+          <div>  ├─ <span class="tc">recipient</span> <span class="td">// receiver DID</span></div>
+          <div>  ├─ <span class="tg">payload_hash</span> <span class="td">// SHA-256</span></div>
+          <div>  └─ <span class="tg">signature</span> <span class="td">// Ed25519</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="tab-signing">
+      <div class="tech-grid">
+        <div class="tech-text">
+          <h3>Ed25519 Signing</h3>
+          <p>Ed25519 provides 128-bit security with 64-byte signatures and sub-millisecond signing. Standardised in RFC 8032, supported by every major cryptographic library and hardware key.</p>
+          <div class="verdict"><div class="verdict-lbl">Quantum migration plan</div><p>Certificate format reserves a field for ML-DSA / Dilithium. Migration tooling will allow re-signing existing certificates when ready.</p></div>
+        </div>
+        <div class="tree reveal">
+          <div class="tr">Signing Process</div>
+          <div>  1. <span class="tc">Serialise payload</span> <span class="td">// canonical JSON</span></div>
+          <div>  2. <span class="tg">SHA-256 hash</span> <span class="td">// 32 bytes</span></div>
+          <div>  3. <span class="tg">Ed25519 sign</span> <span class="td">// private key op</span></div>
+          <div>  4. <span class="tc">Embed signature</span> <span class="td">// base64url</span></div>
+          <div>  5. <span class="tc">Export .dzenq</span> <span class="td">// self-contained</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="tab-verify">
+      <div class="tech-grid">
+        <div class="tech-text">
+          <h3>Verification Without Trust</h3>
+          <p>Anyone with the sender's public key can verify a certificate. No internet. No DzenQ servers. No trust in any third party. Pure mathematics.</p>
+          <div class="verdict"><div class="verdict-lbl">What verification guarantees</div><p>Content unchanged since signing · Signed by claimed identity · Timestamp locked on signing key</p></div>
+        </div>
+        <div class="tree reveal">
+          <div class="tr">Verification Steps</div>
+          <div>  1. <span class="tc">Load .dzenq file</span> <span class="td">// any device</span></div>
+          <div>  2. <span class="tc">Hash payload</span> <span class="td">// reproduce SHA-256</span></div>
+          <div>  3. <span class="tc">Fetch public key</span> <span class="td">// from DID or local</span></div>
+          <div>  4. <span class="tg">Ed25519 verify</span> <span class="td">// mathematical proof</span></div>
+          <div>  5. <span class="tg">✔ Valid</span> <span class="td">— or —</span> <span style="color:#b5694e">✗ Tampered</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-in reveal">
+      <span class="tag tag-green" style="margin-bottom:32px;display:inline-flex">Early Access Open</span>
+      <h2 class="sec-title" style="margin-bottom:18px">Be among the first<br>to give gratitude<br>that lasts forever</h2>
+      <div class="dotsep" style="justify-content:center"><s></s><s></s><s class="g"></s><s></s><s></s></div>
+      <p>Join the early access list. Shape the product. Your feedback will carve the future of digital recognition.</p>
+      <div class="cta-btns">
+        <a href="#" class="btn-primary">Get Early Access</a>
+        <a href="#" class="btn-ghost">Read the Whitepaper</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="flogo">
+    <svg style="width:22px;height:19px;flex-shrink:0" xmlns="http://www.w3.org/2000/svg" viewBox="75 40 1000 880" fill="none" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="ftGradBack" x1="140" y1="160" x2="760" y2="560" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#5a3e22"/><stop offset="1" stop-color="#8a7560"/>
+        </linearGradient>
+        <linearGradient id="ftGradFront" x1="330" y1="720" x2="930" y2="540" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#2e7d54"/><stop offset="1" stop-color="#3d9e6e"/>
+        </linearGradient>
+      </defs>
+      <rect x="140" y="160" width="620" height="400" rx="90" stroke="url(#ftGradBack)" stroke-width="42"/>
+      <g transform="rotate(14 700 580)"><rect x="390" y="380" width="620" height="400" rx="90" stroke="url(#ftGradFront)" stroke-width="42"/></g>
+    </svg>
+    <span class="flogo-text">Dzen<span>Q</span></span>
+  </div>
+  <p>© 2025 DzenQ · <a href="#">Privacy</a> · <a href="#">Terms</a> · Built on open cryptography</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
