@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DzenQ — Recognition Carved in Stone</title>
+  <link rel="canonical" href="https://dzenq.com/">
+  <link rel="alternate" hreflang="en" href="https://dzenq.com/">
+  <link rel="alternate" hreflang="uk" href="https://dzenq.com/uk/">
   <meta name="description" content="DzenQ is the world's first system for issuing and exchanging cryptographic digital gratitude certificates." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -375,6 +378,18 @@
       .feat-grid, .steps { grid-template-columns: 1fr; }
       footer { flex-direction: column; gap: 14px; text-align: center; }
     }
+
+    /* LANG SWITCH */
+    .lang-switch {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .65rem; letter-spacing: .12em;
+      border: 1px solid var(--border-dark); border-radius: 2px;
+      padding: 5px 10px;
+    }
+    .lang-active { color: var(--white); font-weight: 600; }
+    .lang-link { color: var(--text-muted); text-decoration: none; transition: color var(--transition); }
+    .lang-link:hover { color: var(--green-light); }
+    .lang-switch::before { content: '⬡'; color: var(--green-light); font-size: .6rem; margin-right: 2px; }
   </style>
 </head>
 <body>
@@ -408,6 +423,10 @@
       <li><a href="#tech">Technology</a></li>
     </ul>
     <a href="#cta" class="nav-cta">Early Access</a>
+      <div class="lang-switch">
+        <span class="lang-active">EN</span>
+        <a href="https://dzenq.com/uk/" class="lang-link">UK</a>
+      </div>
   </div>
 </nav>
 
