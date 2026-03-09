@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DzenQ - Out of Band Introduction</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            height: 100vh; margin: 0;
+            background-color: #0f172a; color: white;
+            text-align: center; padding: 20px;
+        }
+        .container {
+            max-width: 400px; background: #1e293b;
+            padding: 30px; border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .logo { font-size: 32px; font-weight: 800; color: #f59e0b; margin-bottom: 10px; }
+        .button {
+            display: inline-block; background-color: #f59e0b; color: #1e293b;
+            padding: 14px 28px; border-radius: 14px;
+            text-decoration: none; font-weight: bold;
+            margin-top: 24px; font-size: 16px; transition: all 0.2s;
+        }
+        .button:active { transform: scale(0.96); }
+        .info { font-size: 14px; color: #94a3b8; margin-top: 24px; line-height: 1.5; }
+        .status { color: #10b981; font-size: 14px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">DzenQ</div>
+        <h2>Підключення...</h2>
+        <p>Намагаємося відкрити додаток для автоматичного налаштування зв'язку.</p>
+        <div id="status" class="status">Відкриваємо...</div>
+        <a id="deepLink" href="#" class="button">ВІДКРИТИ ПРИМУСОВО</a>
+        <p class="info">
+            Якщо додаток не відкрився автоматично, натисніть кнопку вище або оберіть <b>"Відкрити у браузері"</b> в меню Telegram.
+        </p>
+    </div>
+
+    <script>
+        function getDeepLink() {
+            // This grabs everything after the "?" in the current URL 
+            // and turns it into a dzenq:// link
+            const params = window.location.search;
+            return "dzenq://oobi" + params;
+        }
+
+        function triggerRedirect() {
+            const deepLink = getDeepLink();
+            document.getElementById("deepLink").href = deepLink;
+            
+            // 1. Try immediate redirect
+            window.location.replace(deepLink);
+            
+            // 2. Fallback attempt after 1.5 seconds
+            setTimeout(() => {
+                window.location.href = deepLink;
+                document.getElementById("status").innerText = "Чекаємо на відповідь системи...";
+                document.getElementById("status").style.color = "#94a3b8";
+            }, 1500);
+        }
+        
+        window.onload = triggerRedirect;
+    </script>
+</body>
+</html>
