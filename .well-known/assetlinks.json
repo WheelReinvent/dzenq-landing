@@ -3,6 +3,6 @@
   "target": {
     "namespace": "android_app",
     "package_name": "com.wheelreinvent.dzenq2",
-    "sha256_cert_fingerprints": ["<YOUR_SHA256_FINGERPRINT_HERE>"]
+    "sha256_cert_fingerprints": ["88:1E:50:37:AC:6D:4B:F7:DF:5A:89:14:B9:38:61:02:3A:1B:2A:F9:77:3C:33:DE:6D:8F:7E:AD:76:01:58:D4"]
   }
 }]
