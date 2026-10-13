@@ -225,3 +225,4 @@ html.js .reveal.in { opacity: 1; transform: none; }
 :root[data-theme="dark"] .theme .sun { display: block; }
 :root[data-theme="dark"] .theme .moon { display: none; }
 @media (max-width: 480px) { .nav .btn.small { display: none; } .nav .wrap { gap: 12px; } }
+.btn[hidden] { display: none; }

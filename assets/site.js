@@ -19,3 +19,16 @@ addEventListener('DOMContentLoaded', () => {
     try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
   });
 });
+
+// The computer button: the installer for this computer's system (none on phones).
+addEventListener('DOMContentLoaded', () => {
+  const b = document.querySelector('.btn.desktop');
+  if (!b) return;
+  const ua = navigator.userAgent, base = b.href.replace(/[^/]*$/, '');
+  if (/Android|iPhone|iPad/i.test(ua)) return;
+  if (/Windows/i.test(ua)) { b.href = base + 'DzenQ-Windows.msi'; b.textContent = 'Windows'; }
+  else if (/Mac/i.test(ua)) { b.href = base + 'DzenQ-macOS.dmg'; b.textContent = 'Mac'; }
+  else if (/Linux/i.test(ua)) { b.href = base + 'DzenQ-Linux.deb'; b.textContent = 'Linux'; }
+  else return;
+  b.hidden = false;
+});
