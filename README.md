@@ -8,7 +8,7 @@ The DzenQ site at https://dzenq.com (GitHub Pages): `index.html` (English), `uk/
 
 ## Service links
 
-Every DzenQ service is linked from the «Сервіси / Services» section. They point at the **test** environment for now:
+The page is a «cinema»: one sentence per screen, scroll-snapped; every DzenQ service is linked from the last screen and the list under it. The links point at the **test** environment for now:
 
 | Service | Address |
 |---|---|
