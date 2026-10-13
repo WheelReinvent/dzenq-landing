@@ -14,7 +14,7 @@ Every DzenQ service is linked from the «Сервіси / Services» section. Th
 |---|---|
 | Web app | `https://dzenq-491220.web.app/` |
 | Windows / macOS / Linux | `https://github.com/WheelReinvent/dzenq-landing/releases/latest/download/DzenQ-Windows.msi` (`DzenQ-macOS.dmg`, `DzenQ-Linux.deb`), published by the DzenQ repo's «Desktop release» workflow |
-| Android (beta) | `https://dzenq-previewer-594587322361.us-west1.run.app/get` |
+| Android (Google Play internal testing; testers only) | `https://play.google.com/apps/internaltest/4701659485857373109` — switch to `https://play.google.com/store/apps/details?id=com.wheelreinvent.dzenq` with open testing |
 | Doors demo | `https://dzenq-doors-594587322361.europe-west1.run.app/` |
 | Sign in with DzenQ demo | `…/demo/login`, discovery `…/.well-known/openid-configuration`, JWKS `…/oauth/jwks` |
 | App privacy / terms / delete account | `https://europe-west1-dzenq-491220.cloudfunctions.net/legal/{privacy,terms,delete}` |
