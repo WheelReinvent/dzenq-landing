@@ -3,9 +3,6 @@
   --bg: #F7F5F1; --panel: #FFFFFF; --text: #191714; --muted: #5F5951;
   --accent: #7A2E3F; --border: #E6E1D9;
 }
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #121110; --panel: #1B1A18; --text: #EDEAE4; --muted: #A39D94; --accent: #D9899A; --border: #2A2825; }
-}
 body { background: var(--bg) !important; color: var(--text) !important; font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif !important; }
 .card { background: var(--panel) !important; border: 1px solid var(--border) !important; border-radius: 20px !important; box-shadow: none !important; }
 h1, h2 { font-family: "Cormorant Garamond", Georgia, serif !important; color: var(--text) !important; font-weight: 600 !important; }

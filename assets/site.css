@@ -26,8 +26,8 @@
   --sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
+/* Dark only when chosen with the moon button (html[data-theme="dark"]). */
+:root[data-theme="dark"] {
     --bg: #121110;
     --surface: #1B1A18;
     --letter: #201E1B;
@@ -45,7 +45,6 @@
     --wash-gold: rgba(246, 168, 92, .16);
     --wash-sea: rgba(76, 195, 178, .14);
     color-scheme: dark;
-  }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -217,3 +216,12 @@ html.js .reveal.in { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
   html.js .reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* Moon / sun button */
+.theme { width: 36px; height: 36px; border-radius: 50%; border: 0; background: transparent; color: var(--ink-2); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }
+@media (hover: hover) { .theme:hover { background: var(--chip); color: var(--ink); } }
+.theme svg { width: 18px; height: 18px; }
+.theme .sun { display: none; }
+:root[data-theme="dark"] .theme .sun { display: block; }
+:root[data-theme="dark"] .theme .moon { display: none; }
+@media (max-width: 480px) { .nav .btn.small { display: none; } .nav .wrap { gap: 12px; } }

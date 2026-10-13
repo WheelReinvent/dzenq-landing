@@ -8,3 +8,14 @@ addEventListener('DOMContentLoaded', () => {
   }), { threshold: 0.12 });
   els.forEach(e => io.observe(e));
 });
+
+// Moon button: light by default, dark only when chosen; remembered per browser.
+addEventListener('DOMContentLoaded', () => {
+  const b = document.querySelector('.theme');
+  if (!b) return;
+  b.addEventListener('click', () => {
+    const dark = document.documentElement.dataset.theme !== 'dark';
+    if (dark) document.documentElement.dataset.theme = 'dark'; else delete document.documentElement.dataset.theme;
+    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+  });
+});
