@@ -17,7 +17,7 @@ const L=(u,e)=>EN?e:u;
   out.textContent=b64(sig);
   const check=async()=>{
     const ok=await subtle.verify({name:'ECDSA',hash:'SHA-256'},kp.publicKey,sig,enc.encode(ta.value));
-    v.textContent=ok?L('✓ Підпис сходиться: це саме те, що написала Оля.','✓ The signature matches: this is exactly what Olya wrote.'):L('✗ Підпис не сходиться: текст змінено після підпису.','✗ The signature doesn\'t match: the text changed after signing.');
+    v.textContent=ok?L('✓ Підпис сходиться: це саме те, що написала Оля.','✓ The signature matches: this is exactly what Emma wrote.'):L('✗ Підпис не сходиться: текст змінено після підпису.','✗ The signature doesn\'t match: the text changed after signing.');
     v.className='verdict'+(ok?'':' bad');
   };
   ta.addEventListener('input',check);check();

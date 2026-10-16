@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="/assets/inside.css?v=2">
 <script>try{if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
 <script src="/assets/site.js?v=kino2" defer></script>
-<script src="/assets/inside.js?v=2" defer></script>
+<script src="/assets/inside.js?v=3" defer></script>
 </head>
 <body>
 <header class="nav">
@@ -32,7 +32,7 @@
   <header class="top">
     <div class="n">Under the hood</div>
     <h1>How do you check someone's word<br>without trusting them — or us?</h1>
-    <p class="lead">Olya thanks Taras. A year later Taras shows that thank-you at a café, on a website or at a private club — and they need to be sure it's real. Without calling Olya, without our server, without a blockchain. Here is how it's done. Some of it you can try by hand right here.</p>
+    <p class="lead">Emma thanks Jack. A year later Jack shows that thank-you at a café, on a website or at a private club — and they need to be sure it's real. Without calling Emma, without our server, without a blockchain. Here is how it's done. Some of it you can try by hand right here.</p>
   </header>
 
   <!-- 1 -->
@@ -41,9 +41,9 @@
     <p>Everyone in DzenQ has a key pair. The private key lives only on their phone and makes signatures. The public key is known to all — and checks them. Change a single letter of the signed text, and the check fails.</p>
     <div class="lab" id="sig">
       <div class="lab-h">Try it <small>real cryptography, right in the browser</small></div>
-      <label class="l">A thank-you from Olya</label>
-      <textarea id="sigText" rows="2">Taras, thank you for helping me move.</textarea>
-      <div class="row2"><span class="k">Olya's signature</span><code id="sigVal">…</code></div>
+      <label class="l">A thank-you from Emma</label>
+      <textarea id="sigText" rows="2">Jack, thank you for helping me move.</textarea>
+      <div class="row2"><span class="k">Emma's signature</span><code id="sigVal">…</code></div>
       <div class="verdict" id="sigVerdict">…</div>
       <p class="hint">Change anything in the text — the signature stops matching. Put it back — ✓ again.</p>
     </div>
@@ -79,7 +79,7 @@
   <!-- 4 -->
   <section>
     <h2><span>4</span>A thank-you carries its own proof</h2>
-    <p>A thank-you is a document (<a href="https://trustoverip.github.io/tswg-acdc-specification/" rel="noopener">ACDC</a>) whose identifier is the fingerprint of its own content. Signatures and Olya's key log travel with it. That is enough for anyone to check it themselves: on their own phone, a year later, even offline.</p>
+    <p>A thank-you is a document (<a href="https://trustoverip.github.io/tswg-acdc-specification/" rel="noopener">ACDC</a>) whose identifier is the fingerprint of its own content. Signatures and Emma's key log travel with it. That is enough for anyone to check it themselves: on their own phone, a year later, even offline.</p>
     <div class="packet" aria-hidden="true"><span>thank-you</span><i>+</i><span>signature</span><i>+</i><span>key log</span><i>=</i><span class="ok">✓ checkable anywhere</span></div>
     <p>A day's thank-yous go into the log as a single mark — the root of a Merkle tree. So the log doesn't bloat: <b>2,000 thank-yous — 12 entries</b>, and one thank-you with everything needed to check it weighs <b>about 4 KB</b>.</p>
   </section>
@@ -87,11 +87,11 @@
   <!-- 5 -->
   <section>
     <h2><span>5</span>What if you show different people different things?</h2>
-    <p>Signatures don't stop one trick: keeping two logs and showing Taras one and the café the other. That's what KERI <b>witnesses</b> and <b>watchers</b> are for — they keep copies of logs and compare them.</p>
+    <p>Signatures don't stop one trick: keeping two logs and showing Jack one and the café the other. That's what KERI <b>witnesses</b> and <b>watchers</b> are for — they keep copies of logs and compare them.</p>
     <div class="fork" aria-hidden="true">
       <div class="fk"><span>1</span><span>2</span><span>3</span></div>
       <div class="fb">
-        <div class="br"><span class="a">4</span><small>version for Taras</small></div>
+        <div class="br"><span class="a">4</span><small>version for Jack</small></div>
         <div class="br"><span class="x">4′</span><small>version for the café</small></div>
       </div>
       <div class="fw">👁 watcher: <b>two histories of one key → proof of deceit</b></div>
@@ -110,7 +110,7 @@
         <span><i></i><i></i><i></i></span><span><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span><span><i></i></span></div>
         <p>Everyone has their own small log. Thank-yous go straight from person to person.</p></div>
     </div>
-    <p>A blockchain solves double spending: so one coin can't be given to two people. For that the whole world must agree on a single order of all payments. But a thank-you <b>isn't spent</b> — Taras doesn't care who else Olya thanked today. So order within <b>one</b> person's log is enough, and they keep it themselves. Hence: no fees, no miners, no public record of who thanked whom. And no weaker security than a blockchain: the same signatures and hash chains, so forging an entry or quietly rewriting history is just as impossible.</p>
+    <p>A blockchain solves double spending: so one coin can't be given to two people. For that the whole world must agree on a single order of all payments. But a thank-you <b>isn't spent</b> — Jack doesn't care who else Emma thanked today. So order within <b>one</b> person's log is enough, and they keep it themselves. Hence: no fees, no miners, no public record of who thanked whom. And no weaker security than a blockchain: the same signatures and hash chains, so forging an entry or quietly rewriting history is just as impossible.</p>
   </section>
 
   <!-- 7 -->
@@ -119,11 +119,11 @@
     <p>A thank-you can also give something. A café, a club or simply a friend issues a <b>certificate for ___</b>: for a coffee, for entry, for a meeting. It goes to those who hold the right thank-yous from the issuer, or to people named. It is shown at a <b>door</b> — DzenQ's word for any place that checks: a till, a website, a bot.</p>
     <ol class="steps">
       <li>The door shows a <b>one-time code</b>.</li>
-      <li>Taras's app asks for his consent and signs that code together with the certificate and the thank-yous it rests on.</li>
+      <li>Jack's app asks for his consent and signs that code together with the certificate and the thank-yous it rests on.</li>
       <li>The door checks everything itself: signatures, logs, who it's addressed to, the certificate's rule, the expiry.</li>
       <li>“Valid ✓” — and the code burns. A copied proof won't work twice.</li>
     </ol>
-    <p>Taras's app doesn't need to be trusted: a modified app can only fool its owner. The door decides. For websites it's plain <b>OpenID Connect</b> — “Sign in with DzenQ” plugs into any standard library.</p>
+    <p>Jack's app doesn't need to be trusted: a modified app can only fool its owner. The door decides. For websites it's plain <b>OpenID Connect</b> — “Sign in with DzenQ” plugs into any standard library.</p>
   </section>
 
   <!-- 8 -->
