@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DzenQ — under the hood</title>
+<meta name="description" content="How to check a thank-you without trusting the person or us: signatures, the key log, the next key, watchers, and why no blockchain.">
+<link rel="canonical" href="https://dzenq.com/inside/">
+<meta property="og:title" content="DzenQ — under the hood">
+<meta property="og:description" content="How to check a thank-you without trusting the person or us: signatures, the key log, the next key, watchers, and why no blockchain.">
+<meta property="og:url" content="https://dzenq.com/inside/">
+<meta property="og:type" content="article">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=kino2">
+<link rel="stylesheet" href="/assets/inside.css?v=2">
+<script>try{if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script src="/assets/site.js?v=kino2" defer></script>
+<script src="/assets/inside.js?v=2" defer></script>
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="/">Dzen<span>Q</span></a>
+  <div class="lang"><a href="/uk/inside/" hreflang="uk" lang="uk">UA</a><span>·</span><span class="on">EN</span></div>
+  <button class="theme" type="button" aria-label="Dark theme" title="Dark theme"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  <a class="open" href="https://dzenq-491220.web.app/">Open →</a>
+</header>
+
+<main class="article">
+  <header class="top">
+    <div class="n">Under the hood</div>
+    <h1>How do you check someone's word<br>without trusting them — or us?</h1>
+    <p class="lead">Olya thanks Taras. A year later Taras shows that thank-you at a café, on a website or at a private club — and they need to be sure it's real. Without calling Olya, without our server, without a blockchain. Here is how it's done. Some of it you can try by hand right here.</p>
+  </header>
+
+  <!-- 1 -->
+  <section>
+    <h2><span>1</span>A signature: words that can't be swapped</h2>
+    <p>Everyone in DzenQ has a key pair. The private key lives only on their phone and makes signatures. The public key is known to all — and checks them. Change a single letter of the signed text, and the check fails.</p>
+    <div class="lab" id="sig">
+      <div class="lab-h">Try it <small>real cryptography, right in the browser</small></div>
+      <label class="l">A thank-you from Olya</label>
+      <textarea id="sigText" rows="2">Taras, thank you for helping me move.</textarea>
+      <div class="row2"><span class="k">Olya's signature</span><code id="sigVal">…</code></div>
+      <div class="verdict" id="sigVerdict">…</div>
+      <p class="hint">Change anything in the text — the signature stops matching. Put it back — ✓ again.</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2><span>2</span>The key log: a history that can't be rewritten</h2>
+    <p>A signature proves “this key signed it”. But keys change, get lost, get stolen. So every person has a <b>key event log</b>: from birth, through every key change, to the marks of thank-yous given. Each entry carries the fingerprint of the one before — a chain where every link holds the next.</p>
+    <div class="lab" id="kel">
+      <div class="lab-h">Try it <small>edit any entry</small></div>
+      <div class="chain" id="chain"></div>
+      <div class="verdict" id="kelVerdict">…</div>
+    </div>
+    <p>No one issues the person's identifier either — not us, not a state, not Google. It is derived from the first entry of the log, so it <b>certifies itself</b>. This is the <a href="https://keri.one" rel="noopener">KERI</a> protocol, an open specification from the Trust over IP community.</p>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2><span>3</span>The next key, sealed in an envelope</h2>
+    <p>KERI's best idea. From birth the log records not only the current key but also <b>the fingerprint of the next one</b>. The next key itself is stored nowhere — it is derived from 12 words the person keeps separately.</p>
+    <div class="lab" id="rot">
+      <div class="keys2">
+        <div class="kk" id="kCur"><b>Key #1</b><small>on the phone · signing</small></div>
+        <div class="kk env" id="kNext"><b>Key #2</b><small>in the log — only its fingerprint</small></div>
+      </div>
+      <div class="verdict" id="rotVerdict">All quiet.</div>
+      <div class="btns2"><button type="button" class="b" id="steal">The phone is stolen</button><button type="button" class="b ghost" id="rotate" disabled>Switch to the next key</button></div>
+    </div>
+    <p>The thief has key #1 but not key #2: its fingerprint is already in the log, and it can't be forged. The owner switches to #2 from the 12 words — and from that moment anything key #1 signs is void. Stealing a key stops being stealing an identity.</p>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2><span>4</span>A thank-you carries its own proof</h2>
+    <p>A thank-you is a document (<a href="https://trustoverip.github.io/tswg-acdc-specification/" rel="noopener">ACDC</a>) whose identifier is the fingerprint of its own content. Signatures and Olya's key log travel with it. That is enough for anyone to check it themselves: on their own phone, a year later, even offline.</p>
+    <div class="packet" aria-hidden="true"><span>thank-you</span><i>+</i><span>signature</span><i>+</i><span>key log</span><i>=</i><span class="ok">✓ checkable anywhere</span></div>
+    <p>A day's thank-yous go into the log as a single mark — the root of a Merkle tree. So the log doesn't bloat: <b>2,000 thank-yous — 12 entries</b>, and one thank-you with everything needed to check it weighs <b>about 4 KB</b>.</p>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2><span>5</span>What if you show different people different things?</h2>
+    <p>Signatures don't stop one trick: keeping two logs and showing Taras one and the café the other. That's what KERI <b>witnesses</b> and <b>watchers</b> are for — they keep copies of logs and compare them.</p>
+    <div class="fork" aria-hidden="true">
+      <div class="fk"><span>1</span><span>2</span><span>3</span></div>
+      <div class="fb">
+        <div class="br"><span class="a">4</span><small>version for Taras</small></div>
+        <div class="br"><span class="x">4′</span><small>version for the café</small></div>
+      </div>
+      <div class="fw">👁 watcher: <b>two histories of one key → proof of deceit</b></div>
+    </div>
+    <p>The DzenQ watcher accepts only events signed by the person themselves and <b>rejects forked logs</b>. It can't forge an entry; the worst it can do is be unavailable. Independent witnesses are the next step.</p>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2><span>6</span>Why no blockchain is needed</h2>
+    <div class="vs2" aria-hidden="true">
+      <div><h3>Blockchain</h3><div class="led">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <p>One shared ledger for everyone. All nodes agree on the order of every entry — consensus, gas, everything public.</p></div>
+      <div><h3>DzenQ</h3><div class="own">
+        <span><i></i><i></i><i></i></span><span><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span><span><i></i></span></div>
+        <p>Everyone has their own small log. Thank-yous go straight from person to person.</p></div>
+    </div>
+    <p>A blockchain solves double spending: so one coin can't be given to two people. For that the whole world must agree on a single order of all payments. But a thank-you <b>isn't spent</b> — Taras doesn't care who else Olya thanked today. So order within <b>one</b> person's log is enough, and they keep it themselves. Hence: no fees, no miners, no public record of who thanked whom.</p>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2><span>7</span>How it's checked at the door</h2>
+    <ol class="steps">
+      <li>The door — a café, a website, a bot — shows a <b>one-time code</b>.</li>
+      <li>Taras's app asks for his consent and signs that code together with the thank-yous behind the certificate.</li>
+      <li>The door checks everything itself: signatures, logs, who it's addressed to, the certificate's rule, the expiry.</li>
+      <li>“Valid ✓” — and the code burns. A copied proof won't work twice.</li>
+    </ol>
+    <p>Taras's app doesn't need to be trusted: a modified app can only fool its owner. The door decides. For websites it's plain <b>OpenID Connect</b> — “Sign in with DzenQ” plugs into any standard library.</p>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <h2><span>8</span>What we see</h2>
+    <div class="see">
+      <div><h3>We see</h3><ul><li>public key logs — so they can be checked</li><li>that a letter reached someone — like a postman</li></ul></div>
+      <div><h3>We don't see</h3><ul><li>what a thank-you says — letters are encrypted for the recipient</li><li>private keys and the 12 words — ever</li></ul></div>
+    </div>
+    <p>Nor can we decide what is genuine: the math on the checker's device does that.</p>
+  </section>
+
+  <!-- 9 -->
+  <section>
+    <h2><span>9</span>Honest limits</h2>
+    <ul class="facts small">
+      <li>A door sees the thank-yous behind a certificate: from whom and for what. Selective disclosure is planned.</li>
+      <li>For now we run the watcher; there are no independent witnesses yet.</li>
+      <li>Like any QR sign-in, the code can be planted on a phishing site — so the phone always shows <i>who</i> is asking.</li>
+    </ul>
+  </section>
+
+  <section class="last">
+    <h2>We didn't invent the cryptography.</h2>
+    <p>KERI and ACDC are open specifications. DzenQ's core is in Rust — the same code signs and checks on the phone, the computer, in the browser and at the door. Our part is to put this serious technology into the simplest thing between people: “thank you”. And to make it outlive even us.</p>
+    <div class="btns">
+      <a class="btn" href="https://dzenq-491220.web.app/">Say thanks</a>
+      <a class="btn ghost" href="/sky/">▶ The idea in a minute</a>
+    </div>
+  </section>
+</main>
+
+<footer class="more">
+  <div class="cols">
+    <div>
+      <h3>For people</h3>
+      <ul>
+          <li><a href="https://dzenq-491220.web.app/">In the browser<span>any device</span></a></li>
+          <li><a href="https://play.google.com/apps/internaltest/4701659485857373109">Android<span>beta for testers</span></a></li>
+          <li><a href="https://github.com/WheelReinvent/dzenq-landing/releases/latest/download/DzenQ-Windows.msi">Windows<span>.msi</span></a></li>
+          <li><a href="https://github.com/WheelReinvent/dzenq-landing/releases/latest/download/DzenQ-macOS.dmg">macOS<span>Apple Silicon, .dmg</span></a></li>
+          <li><a href="https://github.com/WheelReinvent/dzenq-landing/releases/latest/download/DzenQ-Linux.deb">Linux<span>.deb</span></a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>For places and websites</h3>
+      <ul>
+          <li><a href="https://dzenq-doors-594587322361.europe-west1.run.app/">Doors<span>check a certificate</span></a></li>
+          <li><a href="https://dzenq-doors-594587322361.europe-west1.run.app/demo/login">Sign in with DzenQ<span>demo</span></a></li>
+          <li><a href="https://dzenq-doors-594587322361.europe-west1.run.app/.well-known/openid-configuration">For developers<span>OpenID Connect</span></a></li>
+          <li><a href="mailto:liubomyr.ivanitskyi@gmail.com?subject=DzenQ%20pilot">Run a pilot<span>write to us</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">
+    <span class="credo">DzenQ · recognition, etched in stone</span>
+    <nav><a href="/sky/">The idea in a minute</a><a href="/inside/">Under the hood</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://europe-west1-dzenq-491220.cloudfunctions.net/legal/delete">Delete account</a><a href="/uk/inside/">Українською</a><span>© 2026 Wheel Reinvent</span></nav>
+  </div>
+</footer>
+</body>
+</html>
