@@ -120,3 +120,9 @@ p, h1, h2, h3 { margin: 0; }
   .fade h2 { animation: none; opacity: .35; }
   .btn { transition: none; }
 }
+
+/* «▶ Хвилина про ідею» under «Дякую.»: a quiet way into the film (/uk/sky/) */
+.film { display: inline-flex; align-items: center; gap: 10px; margin-top: 26px; font-size: 15px; color: var(--ink-2); text-decoration: none; }
+.film i { width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-style: normal; font-size: 11px; box-shadow: inset 0 0 0 1px var(--ghost); padding-left: 2px; }
+.film:hover { color: var(--ink); }
+.film:hover i { box-shadow: inset 0 0 0 1px var(--ink-3); }

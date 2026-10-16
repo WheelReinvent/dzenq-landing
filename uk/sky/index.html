@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DzenQ — хвилина про ідею</title>
+<meta name="description" content="Тобі допомагають частіше, ніж ти пам'ятаєш. Подякуй зараз — віддячиш, коли зможеш.">
+<link rel="canonical" href="https://dzenq.com/uk/sky/">
+<meta property="og:title" content="DzenQ — хвилина про ідею">
+<meta property="og:description" content="Тобі допомагають частіше, ніж ти пам'ятаєш. Подякуй зараз — віддячиш, коли зможеш.">
+<meta property="og:url" content="https://dzenq.com/uk/sky/">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0B0A12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; background: #0B0A12; overflow: hidden; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .brand { position: fixed; top: 16px; left: 22px; font: 600 26px "Cormorant Garamond", Georgia, serif; color: #E9E2D4; text-decoration: none; z-index: 2; opacity: .85; }
+  .brand span { color: #86E1D0; }
+  .cap { position: fixed; left: 0; right: 0; bottom: 15%; height: 0; pointer-events: none; z-index: 2; }
+  .cap p { position: absolute; left: 50%; bottom: 0; width: min(600px, calc(100% - 48px)); transform: translate(-50%, 6px); margin: 0; text-align: center;
+    font: italic 500 clamp(22px, 3vw, 34px)/1.25 "Cormorant Garamond", Georgia, serif; color: #E9E0CC; opacity: 0; letter-spacing: .01em;
+    transition: opacity .6s, transform .6s; text-shadow: 0 2px 24px rgba(11, 10, 18, 1); }
+  .cap p.on { opacity: .92; transform: translate(-50%, 0); transition: opacity 1.6s .5s, transform 1.6s .5s; }
+  .cap p.end { font-style: normal; font-weight: 600; }
+  .cap p.end a { display: block; margin-top: 18px; font: 600 16px Inter, sans-serif; color: #120F18; background: #FFCF7A; border-radius: 999px; padding: 13px 24px; width: max-content; margin-left: auto; margin-right: auto; text-decoration: none; pointer-events: auto; letter-spacing: 0; }
+  .ui { position: fixed; left: 0; right: 0; bottom: 0; height: 60px; display: flex; align-items: center; gap: 14px; padding: 0 18px; z-index: 2; }
+  .play { flex: none; width: 42px; height: 42px; border-radius: 50%; border: 0; cursor: pointer; background: rgba(255, 255, 255, .07); color: #E9E2D4; display: flex; align-items: center; justify-content: center; }
+  .play:hover { background: rgba(255, 255, 255, .14); }
+  .play svg { width: 18px; height: 18px; fill: currentColor; }
+  .play .p, .play .a { display: none; } .play.on .p { display: block; } .play.on .r { display: none; } .play.end .a { display: block; } .play.end .r { display: none; }
+  .bar { flex: 1; height: 22px; display: flex; align-items: center; cursor: pointer; }
+  .bar div { height: 1px; width: 100%; background: rgba(255, 255, 255, .1); position: relative; }
+  .bar i { position: absolute; left: 0; top: -.5px; height: 2px; background: #C9A764; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<a class="brand" href="/uk/">Dzen<span>Q</span></a>
+<div class="cap" id="cap"></div>
+<div class="ui">
+  <button class="play on" id="play" type="button" aria-label="Пауза">
+    <svg class="p" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+    <svg class="r" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>
+    <svg class="a" viewBox="0 0 24 24"><path d="M12 5a7 7 0 1 1-6.6 4.7l1.9.6A5 5 0 1 0 12 7v3L7.5 6 12 2z"/></svg>
+  </button>
+  <div class="bar" id="bar"><div><i id="fill"></i></div></div>
+</div>
+<script>
+(() => {
+  const SPEED = +(new URLSearchParams(location.search).get('speed')) || 1;
+  const END = 64;
+  const cv = document.getElementById('c'), cx = cv.getContext('2d');
+  let W, H;
+  const resize = () => { const d = Math.min(2, devicePixelRatio || 1); W = Math.max(1, innerWidth); H = Math.max(1, innerHeight); cv.width = W * d; cv.height = H * d; cx.setTransform(d, 0, 0, d, 0, 0); };
+  addEventListener('resize', resize); resize();
+
+  const LINES = [
+    [2.5, 'Тобі допомагають частіше, ніж ти пам\'ятаєш.'],
+    [8.5, 'Кажеш «дякую» — і за тиждень ніхто не згадає, хто кому допоміг.'],
+    [15, 'Записана подяка — лишається.'],
+    [23.5, 'А коли зможеш — віддячиш. Тим, хто справді був поруч.'],
+    [32, 'Хтось допомагає всім — і про це ніхто не знає.'],
+    [41.5, 'Поки йому не подякують так, щоб лишилося.'],
+    [48.5, 'Тоді видно, на кому тримається світ.'],
+    [56.5, '<span>Подякуй зараз. Віддячиш, коли зможеш.</span><a href="https://dzenq-491220.web.app/">Подякувати</a>', 'end'],
+  ];
+  const cap = document.getElementById('cap');
+  const ps = LINES.map(([, h, c]) => { const p = document.createElement('p'); p.innerHTML = h; if (c) p.className = c; cap.appendChild(p); return p; });
+
+  // ── the sky (always the same) ──
+  let seed;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const gauss = () => { let u = 0, v = 0; while (!u) u = rnd(); while (!v) v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  let stars, groups, C1, C2, TAKER, GIVER, sched;
+
+  function build() {
+    seed = 1729;
+    stars = []; groups = [];
+    const star = (x, y, m) => { const s = { x, y, m, b: m, glow: 0, dim: 1, ph: rnd() * 6.28, tw: 1 + rnd() * 2.5, i: stars.length }; stars.push(s); return s; };
+    // groups that will become constellations
+    const centres = [[0, 0], [.62, -.18]];
+    for (let k = 0; k < 26; k++) { const a = rnd() * 6.28, r = .55 + rnd() * 1.15; centres.push([Math.cos(a) * r, Math.sin(a) * r]); }
+    centres.forEach(([gx, gy], k) => {
+      const n = k < 2 ? 7 : 4 + Math.floor(rnd() * 5), g = [];
+      for (let i = 0; i < n; i++) g.push(star(gx + gauss() * .085, gy + gauss() * .085, .55 + rnd() * .5));
+      groups.push(g);
+    });
+    // the loose dust of the sky
+    for (let i = 0; i < 420; i++) { const a = rnd() * 6.28, r = Math.sqrt(rnd()) * 2.1; star(Math.cos(a) * r, Math.sin(a) * r, .12 + rnd() * .3); }
+    C1 = groups[0]; C2 = groups[1];
+    TAKER = C1[0]; TAKER.x = 0; TAKER.y = 0; TAKER.m = TAKER.b = .8;
+    GIVER = C2[0]; GIVER.x = .62; GIVER.y = -.18; GIVER.m = GIVER.b = 1.25;
+    // composed, not random: a calm figure around each of the two
+    C1.slice(1).forEach((s, i) => { const a = i * Math.PI * 2 / (C1.length - 1) + (rnd() - .5) * .5, r = .065 + rnd() * .045; s.x = Math.cos(a) * r; s.y = Math.sin(a) * r * .85; });
+    C2.slice(1).forEach((s, i) => { const a = i * Math.PI * 2 / (C2.length - 1) + (rnd() - .5) * .4, r = .1 + rnd() * .06; s.x = GIVER.x + Math.cos(a) * r; s.y = GIVER.y + Math.sin(a) * r * .85; });
+    const extra = [];
+    for (let i = 0; i < 5; i++) { const a = rnd() * 6.28, r = .13 + rnd() * .07; extra.push(star(GIVER.x + Math.cos(a) * r, GIVER.y + Math.sin(a) * r, .5 + rnd() * .3)); }
+
+    sched = [];
+    const near = (s, pool) => pool.filter(o => o !== s).sort((a, b) => Math.hypot(a.x - s.x, a.y - s.y) - Math.hypot(b.x - s.x, b.y - s.y));
+    const bright = stars.filter(s => s.m > .5);
+    // 1. light passes between people and is gone
+    for (let t = 1.2; t < 14.5; t += .35 + rnd() * .45) {
+      const a = bright[Math.floor(rnd() * bright.length)], nb = near(a, bright).slice(0, 5), b = nb[Math.floor(rnd() * nb.length)];
+      sched.push({ t, kind: 'flash', a, b, dur: 1 + rnd() * .6 });
+    }
+    // 2. the same, but a line stays: everyone in C1 lights the taker…
+    const others1 = C1.slice(1);
+    others1.forEach((s, k) => sched.push({ t: 15.6 + k * 1.1, kind: 'ink', a: s, b: TAKER, dur: 1.4 }));
+    // …and the taker answers, closing each figure
+    others1.forEach((s, k) => sched.push({ t: 24 + k * .85, kind: 'ink', a: TAKER, b: s, dur: 1.3, back: true }));
+    for (let k = 0; k < others1.length - 1; k++) sched.push({ t: 25 + k * .7, kind: 'ink', a: others1[k], b: others1[k + 1], dur: 1.2, faint: true });
+    // 3. the giver lights everyone, and nothing stays
+    const fans = [...C2.slice(1), ...extra];
+    for (let t = 31.5, k = 0; t < 41; t += .42, k++) sched.push({ t, kind: 'flash', a: GIVER, b: fans[k % fans.length], dur: 1.1, giver: true });
+    // …until the answers come
+    fans.slice(0, 9).forEach((s, k) => sched.push({ t: 41.8 + k * .55, kind: 'ink', a: s, b: GIVER, dur: 1.4, toGiver: true }));
+    // 4. the whole sky: every group becomes a figure, slowly
+    groups.slice(2).forEach(g => {
+      const t0 = 46 + rnd() * 9;
+      for (let k = 1; k < g.length; k++) sched.push({ t: t0 + k * .4, kind: 'ink', a: g[k], b: g[Math.floor(rnd() * k)], dur: 1.6, sky: true });
+      if (g.length > 3 && rnd() < .7) sched.push({ t: t0 + g.length * .4, kind: 'ink', a: g[g.length - 1], b: g[0], dur: 1.6, sky: true });
+    });
+    sched.sort((a, b) => a.t - b.t);
+  }
+
+  // ── state ──
+  let T, next, moving, lines, rot;
+  function reset() { build(); T = 0; next = 0; moving = []; lines = []; rot = 0; }
+  function arrive(f) {
+    f.b.glow = 1;
+    if (f.kind === 'ink') { lines.push({ a: f.a, b: f.b, k: 0, back: f.back, faint: f.faint, sky: f.sky, wob: (rnd() - .5) * .18 }); f.b.m = Math.min(1.5, f.b.m + .12); if (f.toGiver) f.b.dim = Math.min(1, f.b.dim + .14); }
+  }
+  function advance(dt) {
+    T += dt;
+    while (next < sched.length && sched[next].t <= T) moving.push({ ...sched[next++], k: 0 });
+    for (let i = moving.length - 1; i >= 0; i--) { const f = moving[i]; f.k += dt / f.dur; if (f.k >= 1) { arrive(f); moving.splice(i, 1); } }
+    lines.forEach(l => l.k = Math.min(1, l.k + dt / 1.1));
+    stars.forEach(s => s.glow = Math.max(0, s.glow - dt * .9));
+    if (T > 33 && T < 41.8) GIVER.dim = Math.max(.28, GIVER.dim - dt * .085);
+    if (T > 46) rot += dt * .006 * clamp((T - 46) / 6);
+  }
+
+  // ── camera ──
+  const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  function camera() {
+    const m = Math.min(W, H);
+    const keys = [[0, .2, -.05, m / 1.5], [13, .2, -.05, m / 1.6], [16, 0, 0, m / .42], [29, 0, 0, m / .42], [32, .62, -.18, m / .5], [45, .62, -.18, m / .5], [54, 0, 0, Math.max(W, H) / 3.4], [99, 0, 0, Math.max(W, H) / 3.6]];
+    let i = 0; while (i < keys.length - 2 && T >= keys[i + 1][0]) i++;
+    const [t0, x0, y0, s0] = keys[i], [t1, x1, y1, s1] = keys[i + 1], k = ease(clamp((T - t0) / (t1 - t0)));
+    return { x: x0 + (x1 - x0) * k, y: y0 + (y1 - y0) * k, s: s0 * Math.pow(s1 / s0, k) };
+  }
+
+  let S, OX, OY, cr, sr;
+  const P = s => { const x = s.x * cr - s.y * sr, y = s.x * sr + s.y * cr; return [OX + x * S, OY + y * S]; };
+  const curve = (a, b, w, k) => { const [ax, ay] = P(a), [bx, by] = P(b), mx = (ax + bx) / 2 - (by - ay) * w, my = (ay + by) / 2 + (bx - ax) * w;
+    return [(1 - k) * (1 - k) * ax + 2 * (1 - k) * k * mx + k * k * bx, (1 - k) * (1 - k) * ay + 2 * (1 - k) * k * my + k * k * by, ax, ay, mx, my, bx, by]; };
+
+  function draw() {
+    const c = camera(); S = c.s; cr = Math.cos(rot); sr = Math.sin(rot);
+    const cx0 = c.x * cr - c.y * sr, cy0 = c.x * sr + c.y * cr; OX = W / 2 - cx0 * S; OY = H * (T > 47 ? .46 - .04 * clamp((T - 47) / 7) : .46) - cy0 * S;
+    const g = cx.createRadialGradient(W / 2, H * .45, 0, W / 2, H * .45, Math.max(W, H) * .85);
+    g.addColorStop(0, '#191527'); g.addColorStop(.6, '#100E19'); g.addColorStop(1, '#09080E');
+    cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+
+    // the old star chart: faint circles of the sky, fading in at the end
+    const gridA = .035 + .07 * clamp((T - 47) / 6);
+    const [ox, oy] = P({ x: 0, y: 0 });
+    cx.strokeStyle = `rgba(201, 167, 100, ${gridA})`; cx.lineWidth = 1;
+    for (let r = .4; r < 2.2; r += .4) { cx.beginPath(); cx.arc(ox, oy, r * S, 0, 7); cx.stroke(); }
+    for (let a = 0; a < 12; a++) { const an = a * Math.PI / 6 + rot; cx.beginPath(); cx.moveTo(ox + Math.cos(an) * .4 * S, oy + Math.sin(an) * .4 * S); cx.lineTo(ox + Math.cos(an) * 2.1 * S, oy + Math.sin(an) * 2.1 * S); cx.stroke(); }
+
+    // lines that stayed — gold ink, drawn by hand
+    const zoomW = Math.min(1.3, Math.max(.6, S / (Math.min(W, H) / .5)));
+    cx.lineCap = 'round';
+    for (const l of lines) {
+      const steps = 24, n = Math.max(1, Math.floor(steps * l.k));
+      const al = l.faint ? .35 : l.sky ? .42 : .7;
+      cx.strokeStyle = l.back ? `rgba(255, 224, 160, ${al})` : `rgba(214, 178, 108, ${al})`;
+      cx.lineWidth = (l.sky ? .9 : 1.3) * zoomW;
+      cx.beginPath();
+      for (let i = 0; i <= n; i++) { const [x, y] = curve(l.a, l.b, l.wob, i / steps); i ? cx.lineTo(x, y) : cx.moveTo(x, y); }
+      cx.stroke();
+    }
+
+    // light passing between people (and gone)
+    for (const f of moving) {
+      const k = ease(f.k), w = f.kind === 'ink' ? .06 : .14;
+      const [hx, hy] = curve(f.a, f.b, w, k), [tx, ty] = curve(f.a, f.b, w, Math.max(0, k - .22));
+      const tail = cx.createLinearGradient(tx, ty, hx, hy);
+      const col = f.giver ? '255, 236, 200' : '255, 226, 170';
+      tail.addColorStop(0, `rgba(${col}, 0)`); tail.addColorStop(1, `rgba(${col}, ${.85 * Math.sin(f.k * Math.PI) + .1})`);
+      cx.strokeStyle = tail; cx.lineWidth = 1.6; cx.beginPath(); cx.moveTo(tx, ty); cx.lineTo(hx, hy); cx.stroke();
+      const hg = cx.createRadialGradient(hx, hy, 0, hx, hy, 7); hg.addColorStop(0, `rgba(${col}, .9)`); hg.addColorStop(1, `rgba(${col}, 0)`);
+      cx.fillStyle = hg; cx.beginPath(); cx.arc(hx, hy, 7, 0, 7); cx.fill();
+    }
+
+    // stars: crisp points that twinkle, warmer when lines reach them
+    const sz = Math.max(.7, Math.min(2.4, S / (Math.min(W, H) / .6)));
+    for (const s of stars) {
+      const [x, y] = P(s);
+      if (x < -20 || y < -20 || x > W + 20 || y > H + 20) continue;
+      const tw = .78 + .22 * Math.sin(T * s.tw + s.ph), lum = s.m * s.dim * tw + s.glow * .6;
+      const r = (.6 + lum * 1.5) * sz;
+      if (lum > .45) { const h = cx.createRadialGradient(x, y, 0, x, y, r * 6); h.addColorStop(0, `rgba(255, 226, 180, ${.18 * lum})`); h.addColorStop(1, 'rgba(255, 226, 180, 0)'); cx.fillStyle = h; cx.beginPath(); cx.arc(x, y, r * 6, 0, 7); cx.fill(); }
+      const warm = clamp((s.m - s.b) * 3 + s.glow);
+      cx.fillStyle = `rgba(${220 + 35 * warm}, ${222 + 6 * warm}, ${240 - 70 * warm}, ${clamp(.25 + lum * .75)})`;
+      cx.beginPath(); cx.arc(x, y, r, 0, 7); cx.fill();
+    }
+
+  }
+
+  // ── play / pause / seek ──
+  const play = document.getElementById('play'), fill = document.getElementById('fill');
+  let playing = true, last = 0;
+  const setPlaying = v => { playing = v; play.classList.toggle('on', v); play.classList.toggle('end', !v && T >= END); play.setAttribute('aria-label', v ? 'Пауза' : 'Грати'); };
+  function seek(to) { reset(); while (T < to) advance(Math.min(1 / 30, to - T)); }
+  function tick(ts) {
+    const dt = last ? Math.min(.05, (ts - last) / 1000) * SPEED : 0; last = ts;
+    if (playing) { advance(dt); if (T >= END) setPlaying(false); }
+    LINES.forEach(([t0], i) => ps[i].classList.toggle('on', T >= t0 && T < (LINES[i + 1] ? LINES[i + 1][0] - .5 : 999)));
+    fill.style.width = (Math.min(1, T / END) * 100) + '%';
+    if (innerWidth !== W || innerHeight !== H) resize();
+    if (W > 40 && H > 40) draw();
+    requestAnimationFrame(tick);
+  }
+  play.addEventListener('click', () => { if (T >= END) seek(0); setPlaying(!playing || T < .01); });
+  document.getElementById('bar').addEventListener('click', e => { const r = e.currentTarget.getBoundingClientRect(); seek(END * clamp((e.clientX - r.left) / r.width)); });
+  addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); play.click(); } });
+  window.__seek = seek;
+  reset();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) setPlaying(false);
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
