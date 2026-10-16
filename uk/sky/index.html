@@ -27,6 +27,7 @@
   .cap p.on { opacity: .92; transform: translate(-50%, 0); transition: opacity 1.6s .5s, transform 1.6s .5s; }
   .cap p.end { font-style: normal; font-weight: 600; }
   .cap p.end a { display: block; margin-top: 18px; font: 600 16px Inter, sans-serif; color: #120F18; background: #FFCF7A; border-radius: 999px; padding: 13px 24px; width: max-content; margin-left: auto; margin-right: auto; text-decoration: none; pointer-events: auto; letter-spacing: 0; }
+  .cap p.end a.sub { background: none; color: #A79FB3; padding: 6px 0; margin-top: 10px; font-weight: 400; font-size: 15px; }
   .ui { position: fixed; left: 0; right: 0; bottom: 0; height: 60px; display: flex; align-items: center; gap: 14px; padding: 0 18px; z-index: 2; }
   .play { flex: none; width: 42px; height: 42px; border-radius: 50%; border: 0; cursor: pointer; background: rgba(255, 255, 255, .07); color: #E9E2D4; display: flex; align-items: center; justify-content: center; }
   .play:hover { background: rgba(255, 255, 255, .14); }
@@ -66,7 +67,7 @@
     [32, 'Хтось допомагає всім — і про це ніхто не знає.'],
     [41.5, 'Поки йому не подякують так, щоб лишилося.'],
     [48.5, 'Тоді видно, на кому тримається світ.'],
-    [56.5, '<span>Подякуй зараз. Віддячиш, коли зможеш.</span><a href="https://dzenq-491220.web.app/">Подякувати</a>', 'end'],
+    [56.5, '<span>Подякуй зараз. Віддячиш, коли зможеш.</span><a href="https://dzenq-491220.web.app/">Подякувати</a><a class="sub" href="/uk/inside/">Як це влаштовано →</a>', 'end'],
   ];
   const cap = document.getElementById('cap');
   const ps = LINES.map(([, h, c]) => { const p = document.createElement('p'); p.innerHTML = h; if (c) p.className = c; cap.appendChild(p); return p; });

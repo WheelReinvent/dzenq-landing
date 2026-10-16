@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DzenQ — під капотом</title>
+<meta name="description" content="Як перевірити подяку, не вірячи ні людині, ні нам: підпис, журнал ключа, наступний ключ, спостерігачі і чому без блокчейну.">
+<link rel="canonical" href="https://dzenq.com/uk/inside/">
+<meta property="og:title" content="DzenQ — під капотом">
+<meta property="og:description" content="Як перевірити подяку, не вірячи ні людині, ні нам: підпис, журнал ключа, наступний ключ, спостерігачі і чому без блокчейну.">
+<meta property="og:url" content="https://dzenq.com/uk/inside/">
+<meta property="og:type" content="article">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=kino2">
+<link rel="stylesheet" href="/assets/inside.css?v=1">
+<script>try{if(localStorage.getItem('theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script src="/assets/site.js?v=kino2" defer></script>
+<script src="/assets/inside.js?v=1" defer></script>
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="/uk/">Dzen<span>Q</span></a>
+  <div class="lang"><span class="on">UA</span><span>·</span><a href="/" hreflang="en" lang="en">EN</a></div>
+  <button class="theme" type="button" aria-label="Темна тема" title="Темна тема"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  <a class="open" href="https://dzenq-491220.web.app/">Відкрити →</a>
+</header>
+
+<main class="article">
+  <header class="top">
+    <div class="n">Під капотом</div>
+    <h1>Як перевірити слово людини,<br>не вірячи ні їй, ні нам?</h1>
+    <p class="lead">Оля дякує Тарасу. Через рік Тарас показує цю подяку в кав'ярні, на сайті чи в закритому клубі — і там мають переконатися, що вона справжня. Без дзвінка Олі, без нашого сервера, без блокчейну. Ось як це зроблено. Дещо можна спробувати руками просто тут.</p>
+  </header>
+
+  <!-- 1 -->
+  <section>
+    <h2><span>1</span>Підпис: слово, яке не можна підмінити</h2>
+    <p>У кожного в DzenQ є пара ключів. Приватний живе тільки на його телефоні й ставить підпис. Публічний знає кожен — і ним цей підпис перевіряє. Змінити в підписаному тексті хоч букву — і перевірка не пройде.</p>
+    <div class="lab" id="sig">
+      <div class="lab-h">Спробуйте <small>справжня криптографія, просто в браузері</small></div>
+      <label class="l">Подяка від Олі</label>
+      <textarea id="sigText" rows="2">Тарасе, дякую, що допоміг з переїздом.</textarea>
+      <div class="row2"><span class="k">Підпис Олі</span><code id="sigVal">…</code></div>
+      <div class="verdict" id="sigVerdict">…</div>
+      <p class="hint">Змініть будь-що в тексті — підпис перестане сходитися. Поверніть як було — знову ✓.</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <h2><span>2</span>Журнал ключа: історія, яку не переписати</h2>
+    <p>Підпис доводить «це підписав цей ключ». Але ключі міняються, губляться, крадуться. Тому до кожної людини прив'язаний <b>журнал ключа</b>: від народження, через кожну зміну ключа, до позначок про видані подяки. Кожен запис несе відбиток попереднього — як ланцюг, де кожна ланка тримає наступну.</p>
+    <div class="lab" id="kel">
+      <div class="lab-h">Спробуйте <small>змініть будь-який запис</small></div>
+      <div class="chain" id="chain"></div>
+      <div class="verdict" id="kelVerdict">…</div>
+    </div>
+    <p>Ідентифікатор людини теж не видає ніхто — ні ми, ні держава, ні Google. Він виводиться з першого запису журналу і тому <b>сам себе засвідчує</b>. Це протокол <a href="https://keri.one" rel="noopener">KERI</a>, відкрита специфікація спільноти Trust over IP.</p>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <h2><span>3</span>Наступний ключ — у конверті</h2>
+    <p>Найкраща ідея KERI. Уже при народженні журнал фіксує не тільки поточний ключ, а й <b>відбиток наступного</b>. Сам наступний ключ ніде не лежить — він виводиться з 12 слів, які людина зберігає окремо.</p>
+    <div class="lab" id="rot">
+      <div class="keys2">
+        <div class="kk" id="kCur"><b>Ключ №1</b><small>на телефоні · підписує</small></div>
+        <div class="kk env" id="kNext"><b>Ключ №2</b><small>у журналі — лише відбиток</small></div>
+      </div>
+      <div class="verdict" id="rotVerdict">Усе спокійно.</div>
+      <div class="btns2"><button type="button" class="b" id="steal">Телефон украли</button><button type="button" class="b ghost" id="rotate" disabled>Перейти на наступний ключ</button></div>
+    </div>
+    <p>Злодій має ключ №1, але не має ключа №2: його відбиток уже в журналі, і підробити його неможливо. Власник з 12 слів переходить на №2 — і з цієї миті все, що підписує ключ №1, недійсне. Крадіжка ключа перестає бути крадіжкою особи.</p>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <h2><span>4</span>Подяка носить свій доказ із собою</h2>
+    <p>Подяка — це документ (<a href="https://trustoverip.github.io/tswg-acdc-specification/" rel="noopener">ACDC</a>), чий ідентифікатор — відбиток його ж вмісту. До нього додаються підписи й журнал ключа Олі. Цього досить, щоб будь-хто перевірив подяку сам: на своєму телефоні, через рік, навіть без інтернету.</p>
+    <div class="packet" aria-hidden="true"><span>подяка</span><i>+</i><span>підпис</span><i>+</i><span>журнал ключа</span><i>=</i><span class="ok">✓ перевіряється будь-де</span></div>
+    <p>Подяки за день лягають у журнал однією позначкою — коренем дерева Меркла. Тому він не роздувається: <b>2000 подяк — 12 записів</b>, а одна подяка з усім потрібним для перевірки важить <b>близько 4 КБ</b>.</p>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <h2><span>5</span>А якщо показати різним людям різне?</h2>
+    <p>Підписи не рятують від одного трюку: вести два журнали і показувати Тарасу один, а кав'ярні інший. Для цього в KERI є <b>свідки</b> і <b>спостерігачі</b> — вони тримають копії журналів і звіряють їх.</p>
+    <div class="fork" aria-hidden="true">
+      <div class="fk"><span>1</span><span>2</span><span>3</span></div>
+      <div class="fb">
+        <div class="br"><span class="a">4</span><small>версія для Тараса</small></div>
+        <div class="br"><span class="x">4′</span><small>версія для кав'ярні</small></div>
+      </div>
+      <div class="fw">👁 спостерігач: <b>дві історії одного ключа → доказ обману</b></div>
+    </div>
+    <p>Спостерігач DzenQ приймає лише події, підписані самою людиною, і <b>відкидає розгалужені журнали</b>. Підробити запис він не може; найгірше, що може, — бути недоступним. Окремі свідки — наступний крок.</p>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <h2><span>6</span>Чому тут не потрібен блокчейн</h2>
+    <div class="vs2" aria-hidden="true">
+      <div><h3>Блокчейн</h3><div class="led">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <p>Один спільний реєстр для всіх. Усі вузли домовляються про порядок кожного запису — консенсус, газ, усе публічно.</p></div>
+      <div><h3>DzenQ</h3><div class="own">
+        <span><i></i><i></i><i></i></span><span><i></i><i></i></span><span><i></i><i></i><i></i><i></i></span><span><i></i></span></div>
+        <p>У кожного свій маленький журнал. Подяки йдуть напряму від людини до людини.</p></div>
+    </div>
+    <p>Блокчейн розв'язує подвійну трату: щоб одну монету не віддали двом. Для цього весь світ мусить знати єдиний порядок усіх платежів. Подяку ж <b>не витрачають</b> — Тарасу байдуже, кому ще Оля дякувала сьогодні. Тож досить порядку в журналі <b>однієї</b> людини, і веде його вона сама. Звідси: без комісій, без майнерів, без публічного реєстру того, хто кому дякував.</p>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <h2><span>7</span>Як перевіряють на вході</h2>
+    <ol class="steps">
+      <li>Двері — кав'ярня, сайт, бот — показують <b>одноразовий код</b>.</li>
+      <li>Застосунок Тараса питає його згоди й підписує цей код разом із подяками, що дають сертифікат.</li>
+      <li>Двері перевіряють усе самі: підписи, журнали, кому адресовано, правило сертифіката, термін.</li>
+      <li>«Дійсний ✓» — і код згорає. Скопійований доказ удруге не спрацює.</li>
+    </ol>
+    <p>Застосунку Тараса вірити не треба: змінений застосунок обдурить лише власника. Вирішують двері. Для сайтів це звичайний <b>OpenID Connect</b> — «Увійти з DzenQ» підключається будь-якою стандартною бібліотекою.</p>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <h2><span>8</span>Що бачимо ми</h2>
+    <div class="see">
+      <div><h3>Бачимо</h3><ul><li>публічні журнали ключів — щоб їх можна було перевірити</li><li>що лист прийшов до когось — як листоноша</li></ul></div>
+      <div><h3>Не бачимо</h3><ul><li>зміст подяк — листи зашифровані для отримувача</li><li>приватних ключів і 12 слів — ніколи</li></ul></div>
+    </div>
+    <p>І вирішувати, що справжнє, ми не можемо: це робить математика на пристрої того, хто перевіряє.</p>
+  </section>
+
+  <!-- 9 -->
+  <section>
+    <h2><span>9</span>Чесно про межі</h2>
+    <ul class="facts small">
+      <li>Двері бачать подяки, що дають сертифікат: від кого й за що. Вибіркове розкриття — у планах.</li>
+      <li>Спостерігача поки тримаємо ми; окремих свідків немає.</li>
+      <li>Як будь-який вхід за QR-кодом, його можна підсунути на фішинговому сайті — тому телефон завжди показує, <i>хто</i> просить вхід.</li>
+    </ul>
+  </section>
+
+  <section class="last">
+    <h2>Криптографію ми не вигадували.</h2>
+    <p>KERI та ACDC — відкриті специфікації. Ядро DzenQ на Rust — той самий код підписує й перевіряє на телефоні, комп'ютері, у браузері й на дверях. Наша частина — покласти цю серйозну техніку в найпростіше, що є між людьми: у «дякую». І зробити так, щоб воно пережило навіть нас.</p>
+    <div class="btns">
+      <a class="btn" href="https://dzenq-491220.web.app/">Подякувати</a>
+      <a class="btn ghost" href="/uk/sky/">▶ Хвилина про ідею</a>
+    </div>
+  </section>
+</main>
+
+<footer class="more">
+  <div class="cols">
+    <div>
+      <h3>Для людей</h3>
+      <ul>
+          <li><a href="https://dzenq-491220.web.app/">У браузері<span>будь-який пристрій</span></a></li>
+          <li><a href="https://play.google.com/apps/internaltest/4701659485857373109">Android<span>бета для тестувальників</span></a></li>
+          <li><a href="https://github.com/WheelReinvent/dzenq-landing/releases/latest/download/DzenQ-Windows.msi">Windows<span>.msi</span></a></li>
+          <li><a href="https://github.com/WheelReinvent/dzenq-landing/releases/latest/download/DzenQ-macOS.dmg">macOS<span>Apple Silicon, .dmg</span></a></li>
+          <li><a href="https://github.com/WheelReinvent/dzenq-landing/releases/latest/download/DzenQ-Linux.deb">Linux<span>.deb</span></a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Для місць і сайтів</h3>
+      <ul>
+          <li><a href="https://dzenq-doors-594587322361.europe-west1.run.app/">Двері<span>перевірити сертифікат</span></a></li>
+          <li><a href="https://dzenq-doors-594587322361.europe-west1.run.app/demo/login">Увійти з DzenQ<span>демо</span></a></li>
+          <li><a href="https://dzenq-doors-594587322361.europe-west1.run.app/.well-known/openid-configuration">Для розробників<span>OpenID Connect</span></a></li>
+          <li><a href="mailto:liubomyr.ivanitskyi@gmail.com?subject=DzenQ%3A%20%D0%BF%D1%96%D0%BB%D0%BE%D1%82">Запустити пілот<span>написати нам</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">
+    <span class="credo">DzenQ · визнання, викарбуване в камені</span>
+    <nav><a href="/uk/sky/">Хвилина про ідею</a><a href="/uk/inside/">Під капотом</a><a href="/uk/privacy/">Конфіденційність</a><a href="/uk/terms/">Умови</a><a href="https://europe-west1-dzenq-491220.cloudfunctions.net/legal/delete">Видалити акаунт</a><a href="/">English</a><span>© 2026 Wheel Reinvent</span></nav>
+  </div>
+</footer>
+</body>
+</html>
